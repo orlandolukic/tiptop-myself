@@ -14,7 +14,8 @@ export default function CollectionPage(props) {
     );
 }
 
-export async function getStaticProps() {
+/*
+export async function getInitialProps() {
     await new Promise((resolve, reject) => {
         setTimeout(resolve, 2500);
     })    
@@ -22,3 +23,4 @@ export async function getStaticProps() {
         props: {}
     }
 }
+*/
