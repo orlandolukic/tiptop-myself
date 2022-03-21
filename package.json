@@ -1,9 +1,10 @@
 {
   "name": "tiptop-myself",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
+  "homepage": "http://www.tiptop.com",  
   "scripts": {
-    "dev": "next dev",
+    "dev": "set PORT=80 && set HOST='tiptop.com' && next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
