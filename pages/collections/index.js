@@ -14,7 +14,7 @@ export default function CollectionPage(props) {
     );
 }
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
     await new Promise((resolve, reject) => {
         setTimeout(resolve, 2500);
     })    
