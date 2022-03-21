@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  distDir: "out",
+  reactStrictMode: true,  
   exportPathMap: async function (
     defaultPathMap,
     { dev, dir, outDir, distDir, buildId }
