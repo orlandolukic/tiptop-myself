@@ -1,0 +1,33 @@
+
+@import "_variables.scss";
+
+.menu-placeholder {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: white;
+    border-bottom: 5px solid $color-gray;
+    padding: 15px 10px;
+
+    .logo-placeholder {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        
+        > div:nth-child(n+2) {
+            margin-left: 10px;
+        }
+        .logo {
+            img {
+                width: 30px;
+                height: 30px;
+            }
+        }
+
+        .name {
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+    }
+}

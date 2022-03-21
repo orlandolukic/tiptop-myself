@@ -3,8 +3,10 @@ import { Html, Head, Main, NextScript } from 'next/document'
 export default function Document() {
   return (
     <Html>
-      <Head />
-      <body>
+      <Head>
+        <link rel="icon" href="logo.svg" />
+      </Head>
+      <body className='tiptop-body'>
         <Main />
         <NextScript />
       </body>

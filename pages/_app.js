@@ -5,6 +5,7 @@ import '../styles/buttons.scss';
 import '../styles/nprogress.css';
 import { useRouter } from 'next/router';
 import NProgress from '../node_modules/nprogress/nprogress';
+import { Menu, MenuStyle } from '../components/menu/menu';
 
 function MyApp({ Component, pageProps }) {   
   const router = useRouter();
@@ -50,11 +51,9 @@ function MyApp({ Component, pageProps }) {
     };
   }, [router]);
 
-  return (
-  <>
-   <Component {...pageProps} />
-  </>  
-  );
+  // Use the layout defined at the page level, if available
+  const getLayout = Component.getLayout || function(page) { return page };
+  return getLayout(<Component {...pageProps} />)
 }
 
 export default MyApp

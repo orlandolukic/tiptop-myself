@@ -24,3 +24,7 @@ $i: 12;
   }
   $i: $i + 1;
 }
+
+.tiptop-body {
+  background-color: lighten($color-gray, 3%);
+}

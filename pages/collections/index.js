@@ -1,23 +1,38 @@
 import Link from "next/link";
+import Head from "next/head";
+import Layout from "../../components/layouts/layout";
 
 export default function CollectionPage(props) {
     return (
         <>
-            <div className="collection-page">
-                Collection page here
-            </div>
+        <Head>
+            <title>Collections | TipTop</title>
+            <meta name="description" content="Buy only quality apparel" />      
+        </Head>
 
-            <Link href="/">
-                Pocetna stranica
-            </Link>
+        <div className="collection-page">
+            Collection page here
+        </div>
+
+        <Link href="/">
+            Pocetna stranica
+        </Link>
         </>    
     );
 }
 
 
-export async function getInitialProps() {
+CollectionPage.getLayout = function(page) {
+    return (
+        <Layout>
+            {page}
+        </Layout>
+    );
+}
+
+export async function getServerSideProps() {
     await new Promise((resolve, reject) => {
-        setTimeout(resolve, 2500);
+        setTimeout(resolve, 1000 + Math.random() * 600);
     })    
     return {
         props: {}

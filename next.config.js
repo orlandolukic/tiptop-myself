@@ -1,4 +1,7 @@
 /** @type {import('next').NextConfig} */
+
+const path = require('path');
+
 const nextConfig = {
   reactStrictMode: true,  
   exportPathMap: async function (
@@ -11,7 +14,10 @@ const nextConfig = {
       '/home': { page: '/home' },
       '/collections': { page: '/collections' }
     }
-  }  
+  },
+  sassOptions: {
+    includePaths: [path.join(__dirname, 'styles')]    
+  }    
 }
 
 module.exports = nextConfig
