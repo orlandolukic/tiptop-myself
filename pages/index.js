@@ -5,7 +5,7 @@ import styles from '../styles/Home.module.scss'
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
-export default function Home() {  
+export default function Index() {  
   const router = useRouter();
 
   let clickHandler = (e) => {    

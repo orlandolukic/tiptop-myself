@@ -2,10 +2,10 @@
   "name": "tiptop-myself",
   "version": "0.1.0",
   "private": false,
-  "homepage": "http://www.tiptop.com",  
+  "homepage": "http://www.tiptop.com",
   "scripts": {
     "dev": "set PORT=80 && set HOST='tiptop.com' && next dev",
-    "build": "next build",
+    "build": "next build && next export",
     "start": "next start",
     "lint": "next lint"
   },
@@ -15,7 +15,8 @@
     "nprogress": "^0.2.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "sass": "^1.49.9"
+    "sass": "^1.49.9",
+    "vercel": "^24.0.0"
   },
   "devDependencies": {
     "eslint": "8.11.0",
