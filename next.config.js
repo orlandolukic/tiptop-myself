@@ -10,7 +10,7 @@ const nextConfig = {
       '/': { page: '/' },
       '/index': { page: '/' },
       '/home': { page: '/home' },
-      'collections': { page: '/collections' }
+      '/collections': { page: '/collections' }
     }
   }  
 }
