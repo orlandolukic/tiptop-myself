@@ -24,7 +24,7 @@ export default function Home() {
         <main className={styles.main}>
           <h1 className={styles.title}>Wear better, look better.</h1>
           <div className='mt-4 font-s-24' onClick={clickHandler}>
-            Don't you just love being in apparel?
+            Don&apos;t you just love being in apparel?
           </div>
 
           <Link href="/collections">
