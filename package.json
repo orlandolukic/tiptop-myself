@@ -7,7 +7,8 @@
     "dev": "set PORT=80 && set HOST='tiptop.com' && next dev",
     "build": "next build && next export",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "export": "next export"
   },
   "dependencies": {
     "bootstrap": "^5.1.3",
