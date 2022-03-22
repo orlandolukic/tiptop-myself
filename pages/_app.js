@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import NProgress from '../node_modules/nprogress/nprogress';
+
+// Import CSS files for the project
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import '../styles/globals.scss';
 import '../styles/buttons.scss';
 import '../styles/nprogress.css';
-import { useRouter } from 'next/router';
-import NProgress from '../node_modules/nprogress/nprogress';
-import { Menu, MenuStyle } from '../components/menu/menu';
 
 function MyApp({ Component, pageProps }) {   
   const router = useRouter();
@@ -53,7 +54,7 @@ function MyApp({ Component, pageProps }) {
 
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout || function(page) { return page };
-  return getLayout(<Component {...pageProps} />)
+  return getLayout(<Component {...pageProps} />);
 }
 
 export default MyApp

@@ -8,7 +8,7 @@
     width: 100%;
     background: white;
     border-bottom: 5px solid $color-gray;
-    padding: 15px 10px;
+    padding: 10px 0px;
 
     .logo-placeholder {
         display: flex;
@@ -20,13 +20,13 @@
         }
         .logo {
             img {
-                width: 30px;
-                height: 30px;
+                width: 35px;
+                height: 35px;
             }
         }
 
         .name {
-            font-size: 1.3em;
+            font-size: 1.6em;
             font-weight: bold;
         }
     }
