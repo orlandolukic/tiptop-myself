@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": false,
   "homepage": "http://www.tiptop.com",
+  "proxy": "http://www.tiptop.com:3001",
   "scripts": {
     "dev": "set PORT=80 && set HOST='tiptop.com' && next dev",
     "build": "next build",
@@ -12,6 +13,7 @@
   },
   "dependencies": {
     "bootstrap": "^5.1.3",
+    "express": "^4.17.3",
     "next": "12.1.0",
     "nprogress": "^0.2.0",
     "react": "17.0.2",
@@ -23,5 +25,5 @@
     "eslint": "8.11.0",
     "eslint-config-next": "12.1.0",
     "eslint-plugin-react-hooks": "^4.3.0"
-  }  
+  }
 }

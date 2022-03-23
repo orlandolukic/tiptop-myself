@@ -5,20 +5,30 @@ import Layout from "../layouts/layout";
 export function DataUserContainer(props) {
 
     let [ t, setT ] = useState(false);
+    let [ data, setData ] = useState(null);
 
     useEffect(() => {
         if ( t )
             return;
 
-        setTimeout(() => {
-            props.changeUser({
-                username: "petar.petrovic",
-                name: "Petar",
-                surname: "Petrovic"
-            });
-        }, 3000);
+        fetch("/api", {
+            method: "POST",
+            headers: {
+                "Content-type": "application/json"
+            },
+            body: JSON.stringify({a: 20, b: 30})
+        })
+            .then((resp) => resp.json())
+            .then((data) => {
+                setData(data);
+                props.changeUser({
+                    username: "petar.petrovic " + data.name,
+                    name: "Petar",
+                    surname: "Petrovic"
+                });
+            })        
 
-        // Set handlers for login
+        // Set handlers for user operations
         props.setHandlers({
             login: function() {
                 console.log("login started");
