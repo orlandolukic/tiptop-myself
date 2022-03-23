@@ -4,7 +4,7 @@ import { connectToDatabase } from "../../lib/mongodb";
 
 export default async function handler(req, res) {
     Obj.increments++;
-    connectToDatabase().then((val) => {
+    connectToDatabase().then((val) => {        
         setTimeout(async () => {
             
             res.status(200);

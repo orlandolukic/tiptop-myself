@@ -11,11 +11,11 @@ function X() {
     })
 
     const onClick = () => {
-        context.operations.login();
+        context.operations.login("petar.petrovic", "petar123");
     }
 
     return (   
-        <div onClick={onClick}>{context.data.username}</div>              
+        <div onClick={onClick}>ABC {context.data.username}</div>              
     );
 }
 
