@@ -11,7 +11,7 @@ export function DataUserContainer(props) {
         if ( t )
             return;
 
-        fetch("/api", {
+        fetch("/api/home", {
             method: "POST",
             headers: {
                 "Content-type": "application/json"
@@ -22,7 +22,7 @@ export function DataUserContainer(props) {
             .then((data) => {
                 setData(data);
                 props.changeUser({
-                    username: "petar.petrovic " + data.name,
+                    username: "petar.petrovic " + data.increments,
                     name: "Petar",
                     surname: "Petrovic"
                 });
@@ -32,14 +32,22 @@ export function DataUserContainer(props) {
         props.setHandlers({
             login: function() {
                 console.log("login started");
-                setTimeout(() => {
-                    console.log("timeout over");
-                    props.changeUser({
-                        username: "petar.petrovic " +  + Math.random(),
-                        name: "Petar",
-                        surname: "Petrovic"
+                fetch("/api/home", {
+                    method: "POST",
+                    headers: {
+                        "Content-type": "application/json"
+                    },
+                    body: JSON.stringify({a: 20, b: 30})
+                })
+                    .then((resp) => resp.json())
+                    .then((data) => {
+                        setData(data);
+                        props.changeUser({
+                            username: "petar.petrovic " + data.increments,
+                            name: "Petar",
+                            surname: "Petrovic"
+                        });
                     })
-                }, 3000);
             }
         });
 
