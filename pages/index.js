@@ -43,8 +43,10 @@ export default function Index(props) {
 
 Index.getLayout = function(page) {
   return (
-    <Layout marginTop={0}>    
-      {page}
-    </Layout>
+    <>
+      <Layout marginTop={0} setMarginTop={false}>
+        {page}
+      </Layout>      
+    </>
   );
 }

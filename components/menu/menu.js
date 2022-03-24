@@ -1,31 +1,67 @@
 import style from './Menu.module.scss';
 import Link from 'next/link';
-import { getUserContext, UserContext } from '../../hooks/useUser';
-import { useContext, useEffect, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBagShopping, faCoffee, faHeart, faUserCircle } from '@fortawesome/free-solid-svg-icons'
+import { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/router';
+import NProgress from 'nprogress';
 
-function X() {
-    const context = useContext(UserContext);
+export function Menu(props) { 
 
-    useEffect(() => {
-        //context.operations.login();
-    })
+    let [ resizeHandler, setResizeHandler ] = useState( () => (e) => {        
+        props.setMenuBarHeight(ref.current.clientHeight);
+    } );
+    let [ x, setX ] = useState(false);
+    let [ inTransition, setInTransition ] = useState(false);
+    let [ inTransitionTimeout, setInTransitionTimeout ] = useState( -1 );
 
-    const onClick = () => {
-        context.operations.login("petar.petrovic", "petar123");
+    const ref = useRef(null);  
+    const router = useRouter();  
+
+    useEffect(() => {                   
+        props.setMenuBarHeight(ref.current.clientHeight);
+    }, [ref]);
+
+    useEffect(() => {                 
+        window.addEventListener('resize', resizeHandler);        
+        return () => {
+            window.removeEventListener('resize', resizeHandler);                        
+        }
+    }, [resizeHandler]);
+
+
+    const slowLinkChange = (dest, delay) => {
+        if ( inTransition )
+            return;
+
+        NProgress.start();
+        setInTransition(true);
+        setInTransitionTimeout( window.setTimeout(() => {
+            router.push(dest);
+            NProgress.done();
+            setInTransition(false);                        
+        }, delay) );
     }
 
-    return (   
-        <div onClick={onClick}>ABC {context.data.username}</div>              
-    );
-}
+    const routeChangeStartHandler = (e) => {
+        if ( inTransition )
+            window.clearTimeout(inTransitionTimeout);
+        setInTransition(false);
+        setInTransitionTimeout(-1);
+    };
 
-export function Menu() { 
+    useEffect(() => {
+        router.events.on("routeChangeStart", routeChangeStartHandler);
+        return () => {
+            router.events.off('routeChangeStart', routeChangeStartHandler);
+        };
+    });
 
     return (
-        <div className={style['menu-placeholder']}>
+        <div ref={ref} className={style['menu-placeholder']}>
             <div className='container'>
                 <div className='row'>
-                    <div className='col-6'>
+                    <div className='col-6 d-flex align-items-center'>
                         <Link href="/">
                             <a>
                                 <div className={style['logo-placeholder']}>
@@ -38,7 +74,26 @@ export function Menu() {
                         </Link>
                     </div>
                     <div className='col-6 d-flex justify-content-end'>                        
-                        <X></X>                        
+                        <div className={style['action-menu-placeholder']}>                            
+
+                            <div className={style['action-menu'] + " " + style['icon-heart']} onClick={slowLinkChange.bind(null, '/wishlist', 100 + Math.random() * 300) }>
+                                <div className={style['icon']}>
+                                    <FontAwesomeIcon icon={faHeart} size="xl" />
+                                </div>
+                            </div>                                                         
+
+                            <div className={style['action-menu']} onClick={slowLinkChange.bind(null, '/cart', 150 + Math.random() * 300) }>
+                                <div className={style['icon']}>
+                                    <FontAwesomeIcon icon={faBagShopping} size="xl" />
+                                </div>
+                            </div>
+
+                            <div className={style['action-menu']}>
+                                <div className={style['icon']}>
+                                    <FontAwesomeIcon icon={faUserCircle} size="xl" />
+                                </div>
+                            </div>
+                        </div>                      
                     </div>
                 </div>
             </div>

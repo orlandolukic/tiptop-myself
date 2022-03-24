@@ -24,7 +24,7 @@ export default function CollectionPage(props) {
 
 CollectionPage.getLayout = function(page) {
     return (
-        <Layout>
+        <Layout setMarginTop={true}>
             {page}
         </Layout>
     );

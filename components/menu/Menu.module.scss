@@ -8,12 +8,15 @@
     width: 100%;
     background: white;
     border-bottom: 5px solid $color-gray;
-    padding: 10px 0px;
 
     .logo-placeholder {
         display: flex;
         flex-direction: row;
         align-items: center;
+        padding: {
+            top: 10px;
+            bottom: 10px;
+        }
         
         > div:nth-child(n+2) {
             margin-left: 10px;
@@ -29,5 +32,42 @@
             font-size: 1.6em;
             font-weight: bold;
         }
+    }
+
+    .action-menu-placeholder {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        
+        .action-menu {
+            padding: 5px 20px;
+            height: 100%; 
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            color: $color-secondary;
+
+            &:hover {
+                background-color: $color-secondary;
+                color: white;  
+                
+                &.icon-heart {
+                    background: red;
+                    color: white;
+                }
+            }
+
+            &:active {
+                -webkit-box-shadow: inset 1px 10px 15px -6px #000000; 
+                box-shadow: inset 1px 10px 15px -6px #000000;
+            }
+
+            &.icon-heart {
+                color: red;
+            }
+
+     
+        }
+        
     }
 }

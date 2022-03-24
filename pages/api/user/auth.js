@@ -10,7 +10,6 @@ export default async function Auth(req, res) {
     let data = req.body;  
     
     let decoded = jwt.verify(data, KEY);        
-    console.log(decoded);
     /*
     try {       
         let db = (await connectToDatabase()).db;    

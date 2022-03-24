@@ -7,9 +7,7 @@ export default async function LoginUser(req, res) {
     let response = {
         status: "not-found"
     };    
-    let data = req.body;  
-
-    console.log(req);
+    let data = req.body; 
     
     try {
         let decodedPassword = jwt.verify(data.password, KEY);        
