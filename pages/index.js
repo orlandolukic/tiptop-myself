@@ -3,7 +3,6 @@ import Button from '../components/button/button'
 import styles from '../styles/Home.module.scss'
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Menu } from '../components/menu/menu';
 import Layout from '../components/layouts/layout';
 
 export default function Index(props) {  

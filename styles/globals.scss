@@ -22,7 +22,8 @@ a {
 }
 
 $i: 12;
-@while $i<60 {
+$to: 100;
+@while $i<$to {
   .font-s-#{$i} {
     font-size: #{$i}px;
   }

@@ -2,9 +2,12 @@ import style from './Menu.module.scss';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBagShopping, faCoffee, faHeart, faUserCircle } from '@fortawesome/free-solid-svg-icons'
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import NProgress from 'nprogress';
+import { useProductContext } from '../../hooks/useProduct';
+import { ActionMenu } from './actionMenu';
+import { CartOverview } from './cart-overview/cartOverview';
 
 export function Menu(props) { 
 
@@ -17,6 +20,7 @@ export function Menu(props) {
 
     const ref = useRef(null);  
     const router = useRouter();  
+    const productContext = useProductContext();
 
     useEffect(() => {                   
         props.setMenuBarHeight(ref.current.clientHeight);
@@ -32,15 +36,26 @@ export function Menu(props) {
 
     const slowLinkChange = (dest, delay) => {
         if ( inTransition )
-            return;
+            return; 
 
+        productContext.cart.putProductInCart({
+            name: "Pull & Bear",
+            category: "Black Ripped Jeans",
+            price: 2500,
+            size: "XS",
+            image: "product-1.webp",
+            quantity: 5
+        });
+        productContext.wishlist.putProductInWishlist("abcd");
+
+        /*
         NProgress.start();
         setInTransition(true);
         setInTransitionTimeout( window.setTimeout(() => {
             router.push(dest);
             NProgress.done();
             setInTransition(false);                        
-        }, delay) );
+        }, delay) );*/
     }
 
     const routeChangeStartHandler = (e) => {
@@ -76,23 +91,27 @@ export function Menu(props) {
                     <div className='col-6 d-flex justify-content-end'>                        
                         <div className={style['action-menu-placeholder']}>                            
 
-                            <div className={style['action-menu'] + " " + style['icon-heart']} onClick={slowLinkChange.bind(null, '/wishlist', 100 + Math.random() * 300) }>
-                                <div className={style['icon']}>
-                                    <FontAwesomeIcon icon={faHeart} size="xl" />
-                                </div>
-                            </div>                                                         
+                            <ActionMenu 
+                                classes={['icon-heart']}                               
+                                slowLinkChange={slowLinkChange}
+                                icon={faHeart}
+                                path="wishlist"
+                            />                                                                                                     
 
-                            <div className={style['action-menu']} onClick={slowLinkChange.bind(null, '/cart', 150 + Math.random() * 300) }>
-                                <div className={style['icon']}>
-                                    <FontAwesomeIcon icon={faBagShopping} size="xl" />
-                                </div>
-                            </div>
+                            <ActionMenu                                
+                                slowLinkChange={slowLinkChange}
+                                icon={faBagShopping}
+                                path="cart"
+                            >
+                                <CartOverview></CartOverview>
+                            </ActionMenu> 
 
-                            <div className={style['action-menu']}>
-                                <div className={style['icon']}>
-                                    <FontAwesomeIcon icon={faUserCircle} size="xl" />
-                                </div>
-                            </div>
+                            <ActionMenu                                
+                                slowLinkChange={slowLinkChange}
+                                icon={faUserCircle}
+                                path={null}
+                            />                                                                          
+                            
                         </div>                      
                     </div>
                 </div>

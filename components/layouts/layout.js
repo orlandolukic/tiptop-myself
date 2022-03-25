@@ -4,6 +4,8 @@ import { DataUserContainer } from "../data/dataUserContainer";
 import { UserContext } from "../../hooks/useUser";
 import { LoadingContext } from "../../hooks/useLoading";
 import { Loader } from "../loader/loader";
+import { ProductContext, useProductContextRoot, useWishlist, useWishlistRoot, WishlistContext } from "../../hooks/useProduct";
+import { LayoutContext, useLayoutContext } from "../../hooks/useLayout";
 
 
 export default function Layout(props) {
@@ -30,8 +32,9 @@ export default function Layout(props) {
     let [ userOperationsObj, setUserOperationsObj ] = useState( userContext.operations );
     let [ isLoggedIn, setIsLoggedIn ] = useState( userContext.isLoggedIn );
     let [ isLoading, setIsLoading ] = useState( true );
-    
-    const loadingContext = useContext(LoadingContext);
+
+    // Wishlist context
+    const productContext = useProductContextRoot();
 
     const getHandlers = (newHandlers) => {
         setUserOperationsObj(newHandlers);
@@ -54,6 +57,7 @@ export default function Layout(props) {
     };
 
     // Loading context
+    const loadingContext = useContext(LoadingContext);
     loadingContext.startLoading = () => {        
         setIsLoading(true);
     };
@@ -61,18 +65,25 @@ export default function Layout(props) {
         setIsLoading(false);
     };
 
+    // Get layout context
+    const layoutContext = useLayoutContext();    
+
     return (
         <>    
-            <LoadingContext.Provider value={loadingContext}>
-                <UserContext.Provider value={{ data: userDataObj, operations: userOperationsObj, isLoggedIn: isLoggedIn }}>
-                    <DataUserContainer handlers={handlers} />
-                    <Menu innerRef={ref} setMenuBarHeight={setMenuBarHeight} />
-                    <div style={{marginTop: marginTop + "px"}}>
-                        {props.children}
-                    </div>
-                    <Loader isLoading={isLoading} />                    
-                </UserContext.Provider>            
-            </LoadingContext.Provider>                    
+            <LayoutContext.Provider value={layoutContext}>
+                <LoadingContext.Provider value={loadingContext}>
+                    <UserContext.Provider value={{ data: userDataObj, operations: userOperationsObj, isLoggedIn: isLoggedIn }}>
+                        <ProductContext.Provider value={productContext}>
+                            <DataUserContainer handlers={handlers} />
+                            <Menu innerRef={ref} setMenuBarHeight={setMenuBarHeight} />
+                            <div style={{marginTop: marginTop + "px"}}>
+                                {props.children}
+                            </div>
+                            <Loader isLoading={isLoading} />                    
+                        </ProductContext.Provider>                    
+                    </UserContext.Provider>            
+                </LoadingContext.Provider>          
+            </LayoutContext.Provider>                  
         </>
     );
 }
