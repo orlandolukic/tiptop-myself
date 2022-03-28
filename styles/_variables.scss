@@ -4,3 +4,15 @@ $color-secondary: #758BFD;
 $color-tertiary: #AEB8FE;
 $color-complementary: #FF8600;
 $color-gray: #F1F2F6; 
+$color-danger: rgb(195, 0, 0);
+$color-success: rgb(0, 184, 0);
+
+$colors: (
+    "primary": ( "background": $color-primary, "color": white ),
+    "secondary": ( "background": $color-secondary, "color": white ),
+    "tertiary": ( "background": $color-tertiary, "color": white ),
+    "complementary": ( "background": $color-complementary, "color": white ),
+    "gray": ( "background": $color-gray, "color": white ),
+    "danger": ( "background": $color-danger, "color": white ),
+    "success": ( "background": $color-success, "color": white )
+);

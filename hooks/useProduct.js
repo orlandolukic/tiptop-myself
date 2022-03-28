@@ -13,7 +13,8 @@ export const ProductContext = createContext({
         getNumberOfProducts: () => {},
         getProducts: () => {},
         refresh: () => {},
-        putProductInCart: () => {}
+        putProductInCart: () => {},
+        flush: () => {}
     }
 });
 
@@ -43,6 +44,9 @@ export function useProductContextRoot() {
                     ...productsCart,
                     p
                 ]);            
+            },
+            flush: function() {
+                setProductsCart([]);
             }
         }
 

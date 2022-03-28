@@ -1,11 +1,10 @@
-
+@use "sass:map";
 @import "_variables";
 
 .button-placeholder {
     padding: 12px 30px;
     cursor: pointer;    
-    border-radius: 5px;
-    font-size: 20px;
+    border-radius: 5px;    
     transition: 0.5s;
 
     -webkit-box-shadow: 5px 5px 25px -11px rgba(0,0,0,0.71); 
@@ -30,5 +29,39 @@
 
     &:active {
         transform: scale3d(0.95,0.95,0.95);
+    }
+
+    // Sizes
+    &.button-size-xs {
+        padding: 5px 10px;
+    }
+    &.button-size-sm {
+        padding: 7px 15px;
+    }
+    &.button-size-md {
+        padding: 10px 15px;
+    }
+    &.button-size-lg {
+        padding: 12px 18px;
+    }
+    &.button-size-xl {
+        padding: 15px 20px;
+    }
+
+    &.button-outlined {
+        
+        -webkit-box-shadow: none; 
+        box-shadow: none;
+        border: 1px solid transparent;
+
+        @each $name, $color in $colors {
+            &.color-#{$name} {
+                border-color: map.get($color, "background");
+                &:hover {
+                    background-color: lighten( map.get($color, "background"), 25% );
+                }
+            }            
+        }
+
     }
 }

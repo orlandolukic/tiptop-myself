@@ -1,4 +1,5 @@
 
+@use "sass:map";
 @import "_variables";
 
 
@@ -64,6 +65,14 @@
             animation-delay: -0.15s;
         }
     }
+
+    @each $name, $colorObj in $colors {
+        &.color-#{$name} {
+            div {
+                border-color: map.get($colorObj, "background") transparent transparent transparent;
+            }
+        }
+      }
 }
   
 @keyframes lds-ring {

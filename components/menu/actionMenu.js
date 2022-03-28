@@ -1,19 +1,15 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext } from "react";
 import { ProductContext } from "../../hooks/useProduct";
+import { ClassManager } from "../../lib/utils";
 import style from './Menu.module.scss';
 
 
 export function ActionMenu({ classes, slowLinkChange, path, icon, children, ...rest }) {
     
-    let className = style['action-menu'];
-
-    if ( typeof classes === typeof [] )
-        classes.map((value) => {  
-            if ( !style[value] )
-                return;
-            className += " " + style[value];        
-        }); 
+    let className = ClassManager(style['action-menu']);
+    className.addClassesWithRoot(style, classes);
+    className = className.getClassName();
 
     const c = useContext(ProductContext);
     let number;
@@ -36,7 +32,7 @@ export function ActionMenu({ classes, slowLinkChange, path, icon, children, ...r
     
     return (
         <>
-            <div className={className}>
+            <div className={className} {...rest}>
                 <div className={style['icon']} onClick={slowLinkChange.bind(null, '/' + path, 100 + Math.random() * 300) }>
                     <FontAwesomeIcon icon={icon} size="xl" />                    
                 </div>

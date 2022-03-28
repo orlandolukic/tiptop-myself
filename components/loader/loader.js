@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import s from './loader.module.scss';
+import { LoaderRing } from './loaderRing';
 
 export function Loader(props) {
 
@@ -12,12 +13,7 @@ export function Loader(props) {
                 <div className={s['background-cover']}></div>
                 <div className={s['content-placeholder']}>
                     <div className={s['content']}>                        
-                        <div className={s['lds-ring']}>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                        </div>
+                        <LoaderRing />
                     </div>
                 </div>
             </div>

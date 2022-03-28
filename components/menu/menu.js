@@ -17,6 +17,8 @@ export function Menu(props) {
     let [ x, setX ] = useState(false);
     let [ inTransition, setInTransition ] = useState(false);
     let [ inTransitionTimeout, setInTransitionTimeout ] = useState( -1 );
+    let [ scrollTop, setScrollTop ] = useState(false);
+    let [ showCart, setShowCart ] = useState(false);
 
     const ref = useRef(null);  
     const router = useRouter();  
@@ -42,11 +44,12 @@ export function Menu(props) {
             name: "Pull & Bear",
             category: "Black Ripped Jeans",
             price: 2500,
+            currency: "USD",
             size: "XS",
             image: "product-1.webp",
-            quantity: 5
-        });
-        productContext.wishlist.putProductInWishlist("abcd");
+            quantity: 5,
+            discount: 200 + Math.random()*600
+        });        
 
         /*
         NProgress.start();
@@ -72,6 +75,15 @@ export function Menu(props) {
         };
     });
 
+    const onMouseEnter = (e) => {
+        setShowCart(true);
+        setScrollTop(true);
+    };
+
+    const onMouseLeave = (e) => {
+        setShowCart(false);
+    };
+    
     return (
         <div ref={ref} className={style['menu-placeholder']}>
             <div className='container'>
@@ -102,8 +114,11 @@ export function Menu(props) {
                                 slowLinkChange={slowLinkChange}
                                 icon={faBagShopping}
                                 path="cart"
+                                onMouseEnter={onMouseEnter}
+                                onMouseLeave={onMouseLeave}
+                                classes={[ showCart ? "show-cart-overview" : null ]}
                             >
-                                <CartOverview></CartOverview>
+                                <CartOverview hide={() => {setShowCart(false)}} scrollTopState={{scrollTop, setScrollTop}}></CartOverview>
                             </ActionMenu> 
 
                             <ActionMenu                                
