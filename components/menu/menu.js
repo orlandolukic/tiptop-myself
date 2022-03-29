@@ -19,6 +19,7 @@ export function Menu(props) {
     let [ inTransitionTimeout, setInTransitionTimeout ] = useState( -1 );
     let [ scrollTop, setScrollTop ] = useState(false);
     let [ showCart, setShowCart ] = useState(false);
+    let [ inc, setInc ] = useState(1);
 
     const ref = useRef(null);  
     const router = useRouter();  
@@ -41,15 +42,18 @@ export function Menu(props) {
             return; 
 
         productContext.cart.putProductInCart({
+            id: inc,
             name: "Pull & Bear",
+            brand: "Pull & Bear",
             category: "Black Ripped Jeans",
             price: 2500,
             currency: "USD",
             size: "XS",
             image: "product-1.webp",
-            quantity: 5,
+            quantity: 1,
             discount: 200 + Math.random()*600
         });        
+        //setInc(inc+1);
 
         /*
         NProgress.start();

@@ -9,6 +9,7 @@
     width: 100%;
     background: white;
     border-bottom: 5px solid $color-gray;
+    z-index: 10;
 
     .logo-placeholder {
         display: flex;

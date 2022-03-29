@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState, useContext } from "react";
+import React, { useEffect, useRef, useState, useContext, Children, isValidElement, cloneElement } from "react";
 import { Menu } from "../menu/menu";
 import { DataUserContainer } from "../data/dataUserContainer";
 import { UserContext } from "../../hooks/useUser";
 import { LoadingContext } from "../../hooks/useLoading";
 import { Loader } from "../loader/loader";
 import { ProductContext, useProductContextRoot, useWishlist, useWishlistRoot, WishlistContext } from "../../hooks/useProduct";
-import { LayoutContext, useLayoutContext } from "../../hooks/useLayout";
+import { LayoutContext, useLayoutContextRoot } from "../../hooks/useLayout";
 
 
 export default function Layout(props) {
@@ -66,7 +66,7 @@ export default function Layout(props) {
     };
 
     // Get layout context
-    const layoutContext = useLayoutContext();    
+    const layoutContext = useLayoutContextRoot(menuBarHeight);    
 
     return (
         <>    

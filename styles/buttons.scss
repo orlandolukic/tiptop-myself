@@ -1,5 +1,6 @@
 @use "sass:map";
 @import "_variables";
+@import "functions";
 
 .button-placeholder {
     padding: 12px 30px;
@@ -63,5 +64,79 @@
             }            
         }
 
+    }
+}
+
+.button-group {
+    display: flex;
+    flex-direction: row;
+    
+    .button {
+        padding: 2px 4px;
+        min-width: 30px;
+        text-align: center;
+        font-size: 1.1em;
+        cursor: pointer;
+        font-weight: bold;
+
+        &:first-child {
+            border-radius: 3px 0 0 3px;
+        }
+
+        &:last-child {
+            border-radius: 0 3px 3px 0;
+        }        
+        
+    }
+
+    input {
+        padding: 2px 4px;
+        outline: none;
+        width: 40px;
+        border-radius: 0;
+        text-align: center;  
+        font-size: 0.8em;      
+    }
+
+    @each $name, $colorObj in $colors {
+        &.color-#{$name} {
+            .button {
+                border: {
+                    top: 1px solid map.get( $colorObj, "background" );
+                    bottom: 1px solid map.get( $colorObj, "background" );                    
+                };
+
+                &:first-child {
+                    border: {
+                        left: 1px solid map.get( $colorObj, "background" );                        
+                    }
+                }
+
+                &:last-child {
+                    border: {
+                        right: 1px solid map.get( $colorObj, "background" );                        
+                    }
+                }
+
+                &:hover {
+                    background-color: getColor("gray", "background");                                                      
+                }
+
+                &:active {
+                    -webkit-box-shadow: inset -1px 0px 32px -23px rgba(0,0,0,0.75);
+                    -moz-box-shadow: inset -1px 0px 32px -23px rgba(0,0,0,0.75);
+                    box-shadow: inset -1px 0px 32px -23px rgba(0,0,0,0.75);                 
+                }
+            }
+
+            input {
+                border: {
+                    top: 1px solid map.get( $colorObj, "background" );
+                    bottom: 1px solid map.get( $colorObj, "background" );                    
+                    left: 1px solid map.get( $colorObj, "background" );
+                    right: 1px solid map.get( $colorObj, "background" );
+                };
+            }
+        }        
     }
 }

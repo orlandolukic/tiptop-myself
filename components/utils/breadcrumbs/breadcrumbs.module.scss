@@ -1,0 +1,29 @@
+
+@import "_variables";
+
+.breadcrumb-container {
+    background-color: $color-gray;
+    padding: 15px 20px;
+
+    .list {
+        display: flex;
+        align-items: center;
+        
+        .list-item {            
+            opacity: 0.5;
+            a {
+                padding: 5px;  
+            }  
+            
+            &.selected {
+                opacity: 1;
+                font-weight: bold;
+            }
+        }
+        
+        .separator {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+    }
+}

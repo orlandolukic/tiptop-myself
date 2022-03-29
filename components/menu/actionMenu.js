@@ -18,7 +18,7 @@ export function ActionMenu({ classes, slowLinkChange, path, icon, children, ...r
         path = "";
         number = 0;
     } else {
-        number = c[path].getNumberOfProducts();
+        number = c[path].getTotalQuantity();
     }
 
     const styleForNumber = {

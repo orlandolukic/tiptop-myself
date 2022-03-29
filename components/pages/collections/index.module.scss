@@ -1,0 +1,19 @@
+
+@import "_variables";
+
+.collections-title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    > .title {
+        display: flex;
+        width: 100%;
+    }
+}
+
+.left-hand-side-panel {
+    &.is-fixed {
+        position: fixed;        
+    }
+}

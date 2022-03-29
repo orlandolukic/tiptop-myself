@@ -45,12 +45,12 @@ export function CartOverview({scrollTopState, hide, ...rest}) {
         let t = 0;
         let tDiscount = 0;
         pr.forEach((item) => {
-            t += item.price;
-            tDiscount += item.discount;
+            t += item.price * item.quantity;
+            tDiscount += item.discount * item.quantity;
         });
         setTotal(t);    
         setDiscount(tDiscount);    
-    }, [productContext.cart.getNumberOfProducts()]);
+    }, [productContext.cart.getNumberOfProducts(), productContext.cart.getRefreshAttempts()]);
 
     let toPrint;
     let toPrintContent = productContext.cart.getNumberOfProducts() > 0;
@@ -59,7 +59,7 @@ export function CartOverview({scrollTopState, hide, ...rest}) {
             <>                
                 <div ref={productsRef} className={s['cart-overview-products']}>
                     {productContext.cart.getProducts().map((product, index) => (
-                        <SingleProduct key={'i' + index} product={product}></SingleProduct>
+                        <SingleProduct key={'i' + index} product={product} loading={{setIsLoading, hide}}></SingleProduct>
                     ))}                    
                 </div>
                 <div className={s['cart-overview-total']}>

@@ -1,0 +1,13 @@
+
+@import "_variables";
+
+
+.single-product-placeholder {
+    color: red;
+
+    > .single-product-image {
+        > img {
+            width: 100%;
+        }
+    }
+}

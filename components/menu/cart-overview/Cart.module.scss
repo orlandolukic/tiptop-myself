@@ -190,7 +190,19 @@
                             }
                             
                         }
-                        // .single-product-options                    
+                        // .single-product-options   
+                        
+                        .single-product-quantity {
+                            margin-top: 10px;
+                            .quantity-input {
+                                width: 40px;
+                                outline: none;
+                                border: 1px solid rgba(25, 118, 210, 0.5);
+                                text-align: center;
+                                font-size: 0.9em;                                                                
+                            }
+                            
+                        }
                     }
                     // .single-product-details
 

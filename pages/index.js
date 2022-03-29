@@ -28,7 +28,7 @@ export default function Index(props) {
 
           <Link href="/collections">
             <a>
-              <Button className="mt-4" color="primary">
+              <Button className="mt-4 font-s-20" color="primary">
                 Shop now
               </Button>
             </a>
