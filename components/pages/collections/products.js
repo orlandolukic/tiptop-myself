@@ -1,0 +1,79 @@
+import { useEffect, useState } from "react";
+import { SingleProduct } from "./single-product/singleProduct";
+
+
+export function Products({ products, showProducts }) {
+
+    const previewLimit = 20;
+    const animationDelayIncrement = 200;
+    const animationDuration = 2500;
+
+    const [ allProducts ] = useState( products );
+    const [ previewProducts, setPreviewProducts ] = useState([]);
+    const [ offset, setOffset ] = useState(0);
+    const [ animateTimeout, setAnimateTimeout ] = useState(0);
+    const [ listener, setListener ] = useState(false);
+    const [ displaying, setDisplaying ] = useState(true);
+
+    const windowScrollListener = (e) => {
+        if ( displaying )
+            return;
+        let html = document.documentElement;
+        
+        if ( html.scrollHeight - html.scrollTop - html.clientHeight < 350 ) {            
+            setDisplaying(true);
+            setOffset( offset + previewLimit );
+        }
+    };
+
+    useEffect(() => {
+        if ( !showProducts )
+            return;
+
+        let arr = [];
+        let added = 0;
+        let animationTime = 1000;
+        for (let i=offset; i < allProducts.length && added < previewLimit; i++) {
+            arr.push({  
+                product: allProducts[i],
+                animationDelay: animationTime,
+                animationDuration: animationDuration
+            });
+            animationTime += animationDelayIncrement;
+            added++;
+        }        
+        setPreviewProducts([
+            ...previewProducts,
+            ...arr
+        ]);  
+        setTimeout(() => {
+            setDisplaying(false);      
+        }, animationTime);    
+
+    }, [showProducts, offset]);
+
+    useEffect(() => {        
+        window.addEventListener("scroll", windowScrollListener);
+        return () => {
+            window.removeEventListener("scroll", windowScrollListener);
+        };        
+    }, [listener, displaying]);
+
+    useEffect(() => {
+        if ( offset >= allProducts.length )
+            window.removeEventListener("scroll", windowScrollListener);
+    }, [offset]);
+    
+    return (
+        <>        
+            {previewProducts.map((product, index) => (
+                <SingleProduct key={'index-' + index} singleProduct={product} index={index} columns={{
+                    xs: 1,
+                    sm: 2,
+                    md: 3,
+                    lg: 4
+                }} />                                                            
+            ))}            
+        </>
+    );
+}

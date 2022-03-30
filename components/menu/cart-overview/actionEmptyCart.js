@@ -16,19 +16,17 @@ export function ActionEmptyCart({s, isLoading, hide, ...rest}) {
         setDeleteCart(true);        
     }
 
-    useEffect(() => {
+    useEffect(async () => {
         if ( deleteCart ) {
             // Perform API call
-            setTimeout(() => {
-                toast.success("Shopping cart successfully emptied!", {
-                    autoClose: 4000,                      
-                    onOpen: () => {
-                        setDeleteCart(false);
-                        cart.flush();
-                        hide();
-                    }    
-                });                                
-            }, 1500);
+            await cart.flush();
+            toast.success("Shopping cart successfully emptied!", {
+                autoClose: 4000,                      
+                onOpen: () => {                                                                    
+                    hide();
+                    setDeleteCart(false);
+                }    
+            });         
         }
     }, [deleteCart]);
 

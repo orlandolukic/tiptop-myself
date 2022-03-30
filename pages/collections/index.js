@@ -1,13 +1,35 @@
 import Head from "next/head";
 import { CollectionsLayout } from "components/layouts/collections-layout";
 import s from "components/pages/collections/index.module.scss";
-import { Checkbox, FormControlLabel } from "@mui/material";
 import { LeftHandSidePanel } from "components/pages/collections/leftHandSidePanel";
 import { connectToDatabase } from "lib/mongodb";
-import { Fragment } from "react";
-import { SingleProduct } from "components/pages/collections/single-product/singleProduct";
+import { useEffect, useState } from "react";
+import { Loader } from "components/loader/loader";
+import { Products } from "components/pages/collections/products";
 
 export default function CollectionPage({ products, categories, brands, ...rest }) {
+
+    const [ isLoading, setIsLoading ] = useState(true);  
+    const [ showProducts, setShowProducts ] = useState(false);  
+
+    useEffect(() => {
+        if ( isLoading ) {
+            let t = 150 + Math.random() * 250;
+            setTimeout(() => {
+                setShowProducts(true);
+            }, t);
+            setTimeout(() => {
+                setIsLoading(false);
+            }, t + 450);
+        }
+    }, [isLoading]);
+
+    useEffect(() => {  
+        setTimeout(() => {
+            window.scrollTo(0,0);      
+        }, 1000);        
+        return () => {}
+    }, []);
 
     return (
         <>
@@ -24,23 +46,22 @@ export default function CollectionPage({ products, categories, brands, ...rest }
                 <div className="col-12 col-lg-10">
                     <div className={s['collections-title']}>
                         <div className={s['title']}>
-                            <h3>Collections</h3>
+                            <div>
+                                <h3 style={{marginBottom: "3px"}}>Collections</h3>                                                                                    
+                                <h6>Buy something your 🧡 desires the most</h6>
+                            </div>                            
                         </div>
                         <div className={s['sort']}>
                             Sort
                         </div>
                     </div>
                     <div className="mt-4">
-                        <div className="row">
-                            {products.map((product, index) => (
-                                <SingleProduct key={'index-' + index} product={product} columns={{
-                                    xs: 1,
-                                    sm: 2,
-                                    md: 3,
-                                    lg: 4
-                                }} />                                                            
-                            ))}
-                        </div>
+                        <div className={s['products-placeholder']}>
+                            <Loader classNames={['color-primary']} isLoading={isLoading} styleContainer={{ position: "absolute", minHeight: "400px" }} positionLoader={{top: "150px"}} /> 
+                            <div className="row mb-5">
+                                <Products showProducts={showProducts} products={products} />
+                            </div>                        
+                        </div>                        
                     </div>                    
                 </div>
             </div>

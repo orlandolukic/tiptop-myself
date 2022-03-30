@@ -6,17 +6,19 @@ import s from "./index.module.scss";
 
 export function LeftHandSidePanel({ categories, brands, ...rest }) {
 
-    const filtersRef = createRef(); 3
+    const filtersRef = createRef();
     const [ fixed, setIsFixed ] = useState(false);
     
     const layoutContext = useLayoutContext();    
 
-    const scroll = (e) => {
-        if ( document.documentElement.scrollTop > layoutContext.getMenuBarHeight() ) {
-            setIsFixed(true);
-        } else {
-            setIsFixed(false);
-        }
+    const scroll = (e) => {        
+        try {        
+            if ( document.documentElement.scrollTop > filtersRef.current.getBoundingClientRect().top - 30 ) {
+                setIsFixed(true);
+            } else {
+                setIsFixed(false);
+            }
+        } catch(e) {}
     }
 
     useEffect(() => {
@@ -31,7 +33,7 @@ export function LeftHandSidePanel({ categories, brands, ...rest }) {
 
             <h3>Filters</h3>
 
-            <div className="mt-4">
+            <div className="mt-5">
                 <h6>Brands</h6>
 
                 <div className="mt-2">

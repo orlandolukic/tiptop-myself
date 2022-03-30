@@ -6,6 +6,7 @@ $color-complementary: #FF8600;
 $color-gray: #F1F2F6; 
 $color-danger: rgb(195, 0, 0);
 $color-success: rgb(0, 184, 0);
+$color-white: white;
 
 $colors: (
     "primary": ( "background": $color-primary, "color": white ),
@@ -14,5 +15,6 @@ $colors: (
     "complementary": ( "background": $color-complementary, "color": white ),
     "gray": ( "background": $color-gray, "color": white ),
     "danger": ( "background": $color-danger, "color": white ),
-    "success": ( "background": $color-success, "color": white )
+    "success": ( "background": $color-success, "color": white ),
+    "white": ( "background": $color-white, "color": black )
 );

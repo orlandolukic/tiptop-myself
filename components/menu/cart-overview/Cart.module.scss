@@ -34,6 +34,7 @@
 
             position: relative;
             width: 100%;
+            z-index: 101;
             background-color: white;
             border: 1px solid lighten( $color-complementary, 42% );
             cursor: default;
