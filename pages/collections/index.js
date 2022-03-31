@@ -3,14 +3,42 @@ import { CollectionsLayout } from "components/layouts/collections-layout";
 import s from "components/pages/collections/index.module.scss";
 import { LeftHandSidePanel } from "components/pages/collections/leftHandSidePanel";
 import { connectToDatabase } from "lib/mongodb";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Loader } from "components/loader/loader";
 import { Products } from "components/pages/collections/products";
+import { LinkedList } from "lib/linkedList";
+import { useStateWithLabel } from "lib/utils";
 
-export default function CollectionPage({ products, categories, brands, ...rest }) {
+export default function CollectionPage({ products, categoriesList, brandsList, ...rest }) {
 
     const [ isLoading, setIsLoading ] = useState(true);  
     const [ showProducts, setShowProducts ] = useState(false);  
+    const [ brands, setBrands ] = useStateWithLabel({}, "Brands");
+    const [ categories, setCategories ] = useStateWithLabel({}, "Categories");
+    const [ filterTimeout, setFilterTimeout ] = useStateWithLabel(null, "FilterTimeout");
+    const [ resetProducts, setResetProducts ] = useStateWithLabel(false, "ResetProducts");
+    const changeFilter = useCallback((type, name, value) => {
+        setShowProducts(false);
+        setIsLoading(true); 
+        setResetProducts(true);  
+        window.clearTimeout(filterTimeout);     
+        setFilterTimeout(window.setTimeout(() => {
+            if ( type === "category" ) {
+                setCategories({
+                    ...categories,
+                    [name]: value
+                });
+            } else {
+                setBrands({
+                    ...brands,
+                    [name]: value
+                });
+            }
+            setResetProducts(false);
+            setIsLoading(false);
+            setShowProducts(true);
+        }, 350));        
+    });
 
     useEffect(() => {
         if ( isLoading ) {
@@ -27,8 +55,19 @@ export default function CollectionPage({ products, categories, brands, ...rest }
     useEffect(() => {  
         setTimeout(() => {
             window.scrollTo(0,0);      
-        }, 1000);        
-        return () => {}
+        }, 1000); 
+        
+        // Create filter objects
+        brandsList.forEach((value) => {
+            brands[value.brandName] = false;
+        });
+        categoriesList.forEach((value) => {
+            categories[value.categoryName] = false;
+        });
+        return () => {
+            if ( filterTimeout !== null )
+                window.clearTimeout(filterTimeout);
+        }
     }, []);
 
     return (
@@ -41,7 +80,7 @@ export default function CollectionPage({ products, categories, brands, ...rest }
         <div className="container pt-3">
             <div className="row">
                 <div className="col-lg-2 d-none d-sm-block">
-                    <LeftHandSidePanel categories={categories} brands={brands} {...rest} />
+                    <LeftHandSidePanel categories={categoriesList} brands={brandsList} changeFilter={changeFilter} {...rest} />
                 </div>
                 <div className="col-12 col-lg-10">
                     <div className={s['collections-title']}>
@@ -59,7 +98,7 @@ export default function CollectionPage({ products, categories, brands, ...rest }
                         <div className={s['products-placeholder']}>
                             <Loader classNames={['color-primary']} isLoading={isLoading} styleContainer={{ position: "absolute", minHeight: "400px" }} positionLoader={{top: "150px"}} /> 
                             <div className="row mb-5">
-                                <Products showProducts={showProducts} products={products} />
+                                <Products showProducts={showProducts} products={products} filters={{brands, categories}} resetProductsOrder={resetProducts} />
                             </div>                        
                         </div>                        
                     </div>                    
@@ -110,8 +149,8 @@ export async function getServerSideProps() {
     return {
         props: {
             products: arr,
-            brands: brands,
-            categories: categories
+            brandsList: brands,
+            categoriesList: categories
         }
     }
 }

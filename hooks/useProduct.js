@@ -1,5 +1,6 @@
+import { Mutex } from "lib/semaphore";
 import { useStateWithLabel } from "lib/utils";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 
 export const ProductContext = createContext({
@@ -22,7 +23,8 @@ export const ProductContext = createContext({
         setQuantityForProduct: async (product, quantity) => {},
         getRefreshAttempts: () => {},
         getTotalQuantity: () => {},
-        deleteItem: async (item) => {}
+        deleteItem: async (item) => {},
+        hasProduct: (id) => {}
     }
 });
 
@@ -31,65 +33,66 @@ export function useProductContextRoot() {
     let [ productsCart, setProductsCart ] = useState([]); 
     let [ refreshCart, setRefreshCart ] = useStateWithLabel(0, "RefreshCart");
     let [ refreshWishlist, setRefreshWishlist ] = useStateWithLabel(0, "RefreshWishlist");
-    
-    let [ toDeleteWishlist, setToDeleteWishlist ] = useStateWithLabel([], "ToDeleteWishlist");
-    let [ toDeleteWishlistIndex, setToDeleteWishlistIndex ] = useStateWithLabel(-1, "ToDeleteWishlistIndex");    
+      
+    let [ mutexWishlist ] = useStateWithLabel( Mutex() );
+    let elementsInWishlist = useRef({
+        array: productsWishlist,
+        elements: productsWishlist.length
+    });
 
     useEffect(() => {
-        
-        console.log("here");
-        if ( toDeleteWishlist.length > 0 ) {         
-            let deleteRequest = toDeleteWishlist[toDeleteWishlistIndex];
-            setProductsWishlist( 
-                productsWishlist.filter((el) => {
-                    if ( el.id === deleteRequest.id )
-                        return false;
-                    return true;
-                })
-            ); 
-            deleteRequest.resolve();
 
-            if ( toDeleteWishlistIndex + 1 === toDeleteWishlist.length ) {
-                setToDeleteWishlist([]);
-                setToDeleteWishlistIndex(-1);
-            } else {
-                setToDeleteWishlistIndex(toDeleteWishlistIndex+1);
-            }           
-        }
-    }, [ toDeleteWishlistIndex ]);
+        if ( productsWishlist.length === elementsInWishlist.current.elements && productsWishlist.length === 0 )        
+            return;
+        if ( productsWishlist.length < elementsInWishlist.current.elements ) {            
+            // Unblock waiting request
+            mutexWishlist.release();
+        } else if ( productsWishlist.length > elementsInWishlist.current.elements  ) {
+            // Unblock waiting request
+            mutexWishlist.release();
+        };
+        elementsInWishlist.current = {
+            array: productsWishlist,
+            elements: productsWishlist.length
+        };
 
-
-
-    const addDeleteRequest = async function( id, refresh ) {          
-        return new Promise((resolve) => {                        
-            toDeleteWishlist.push({
-                id: id,                
-                resolve: resolve
-            });             
-            if ( toDeleteWishlistIndex === -1 ) {
-                setToDeleteWishlistIndex(0);
-            }
-        });            
-    };
+    }, [productsWishlist.length]);
     
     return {
         wishlist: {
             getNumberOfProducts: () => productsWishlist.length,
             getProducts: () => productsWishlist,
             refresh: () => { setRefreshWishlist(refreshWishlist+1); },
-            putProductInWishlist: async function(p) {            
-                productsWishlist.push(p);  
-                this.refresh();          
+            putProductInWishlist: async function(p) { 
+                await mutexWishlist.acquire();
+                await new Promise((resolve) => {
+                    setTimeout(() => {
+                        setProductsWishlist([
+                            ...elementsInWishlist.current.array,
+                            p
+                        ]);  
+                        resolve();
+                    }, 650); 
+                });
             },
             getTotalQuantity: () => productsWishlist.length,
-            deleteItem: async function (id) {                
-                return new Promise((resolve, reject) => {
+            deleteItem: async function (id) {               
+                
+                await mutexWishlist.acquire();             
+                await new Promise((resolve, reject) => {
                     let r = this.refresh;                     
-                    setTimeout(async () => {
-                        await addDeleteRequest(id, r);                                                       
+                    setTimeout(() => {                        
+                        setProductsWishlist( 
+                            elementsInWishlist.current.array.filter((el) => {                               
+                                if ( el.id === id )
+                                    return false;
+                                return true;
+                            })
+                        );                                                                                                                                                 
                         resolve();
-                    }, 2000);                    
-                });            
+                    }, 1000);                    
+                }); 
+
             },
             hasProduct: (id) => {
                 for (let i=0; i < productsWishlist.length; i++) {
@@ -99,6 +102,10 @@ export function useProductContextRoot() {
                 return false;
             }
         }, 
+
+        // =========================================================================
+        //      CART
+        // =========================================================================
         
         cart: {
             getNumberOfProducts: () => productsCart.length,
@@ -164,6 +171,13 @@ export function useProductContextRoot() {
                         resolve();
                     }, 2000);                    
                 });                           
+            },
+            hasProduct: function(id) {
+                for (let i=0; i < productsCart.length; i++) {
+                    if ( productsCart[i].id === id )
+                        return true;
+                }
+                return false;
             }
         }
 

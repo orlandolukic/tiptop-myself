@@ -1,22 +1,25 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { SingleProduct } from "./single-product/singleProduct";
 
 
-export function Products({ products, showProducts }) {
+export function Products({ products, showProducts, filters, resetProductsOrder }) {
 
     const previewLimit = 20;
     const animationDelayIncrement = 200;
     const animationDuration = 2500;
 
-    const [ allProducts ] = useState( products );
+    const [ allProducts ] = useState( products );    
     const [ previewProducts, setPreviewProducts ] = useState([]);
     const [ offset, setOffset ] = useState(0);
     const [ animateTimeout, setAnimateTimeout ] = useState(0);
     const [ listener, setListener ] = useState(false);
     const [ displaying, setDisplaying ] = useState(true);
+    const timeouts = useRef({
+        displaying: null
+    });
 
     const windowScrollListener = (e) => {
-        if ( displaying )
+        if ( displaying || resetProductsOrder )
             return;
         let html = document.documentElement;
         
@@ -46,7 +49,7 @@ export function Products({ products, showProducts }) {
             ...previewProducts,
             ...arr
         ]);  
-        setTimeout(() => {
+        timeouts.current.displaying = window.setTimeout(() => {
             setDisplaying(false);      
         }, animationTime);    
 
@@ -63,6 +66,19 @@ export function Products({ products, showProducts }) {
         if ( offset >= allProducts.length )
             window.removeEventListener("scroll", windowScrollListener);
     }, [offset]);
+
+    useEffect(() => {
+        return () => {
+            window.clearTimeout(timeouts.current.displaying);
+        };
+    }, []);
+
+    useEffect(() => {
+        if ( resetProductsOrder ) {
+            setOffset(0);
+            setPreviewProducts([]);            
+        }
+    }, [resetProductsOrder]);
     
     return (
         <>        

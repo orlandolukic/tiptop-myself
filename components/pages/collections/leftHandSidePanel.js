@@ -1,13 +1,13 @@
 import { Checkbox, FormControlLabel } from "@mui/material";
 import { useLayoutContext } from "hooks/useLayout";
-import { createRef, Fragment, useEffect, useState } from "react";
+import { createRef, Fragment, useCallback, useEffect, useState } from "react";
 import s from "./index.module.scss";
 
 
-export function LeftHandSidePanel({ categories, brands, ...rest }) {
+export function LeftHandSidePanel({ categories, brands, changeFilter, ...rest }) {
 
     const filtersRef = createRef();
-    const [ fixed, setIsFixed ] = useState(false);
+    const [ fixed, setIsFixed ] = useState(false);    
     
     const layoutContext = useLayoutContext();    
 
@@ -20,6 +20,13 @@ export function LeftHandSidePanel({ categories, brands, ...rest }) {
             }
         } catch(e) {}
     }
+
+    const onChangeCategory = useCallback((category, e) => {
+        changeFilter("category", category.categoryName, e.target.checked);
+    });
+    const onChangeBrand = useCallback((brand, e) => {
+        changeFilter("brand", brand.brandName, e.target.checked);
+    });
 
     useEffect(() => {
         window.addEventListener("scroll", scroll);
@@ -42,12 +49,11 @@ export function LeftHandSidePanel({ categories, brands, ...rest }) {
                             padding: "0px",
                             display: "block"                               
                         }} control={
-                            <Checkbox sx={{padding: "2px 10px 2px 10px"}} />
+                            <Checkbox onChange={onChangeBrand.bind(null, value)} sx={{padding: "2px 10px 2px 10px"}} />
                         } label={value.brandName} />
                     ))}                           
                     
                 </div>
-
 
                 <h6 className="mt-4">Category</h6>
 
@@ -57,7 +63,7 @@ export function LeftHandSidePanel({ categories, brands, ...rest }) {
                             padding: "0px",
                             display: "block"                               
                         }} control={
-                            <Checkbox sx={{padding: "2px 10px 2px 10px"}} />
+                            <Checkbox onChange={onChangeCategory.bind(null, value)} sx={{padding: "2px 10px 2px 10px"}} />
                         } label={value.categoryName} />
                     ))}                           
                     
