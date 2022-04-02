@@ -4,7 +4,7 @@ import Layout from "./layout";
 
 export function CollectionsLayout(page) {    
     return (
-        <Layout setMarginTop={true}>
+        <Layout setMarginTop={true} showCurrency={true}>
             <Breadcrumbs path={[
                 {name: "Collections", url: "/collections", canNavigate: true}
             ]} />

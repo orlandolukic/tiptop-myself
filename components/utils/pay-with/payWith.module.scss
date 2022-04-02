@@ -1,0 +1,56 @@
+
+
+@import "_variables";
+@import "animations";
+
+
+.pay-with-container {
+    opacity: 0.2;
+    width: 100%;
+    transition: 0.6s;
+    animation: {
+        name: endlessly-opacity-change;
+        duration: 6s;
+        iteration-count: infinite;
+        timing-function: cubic-bezier(.01,.25,.39,.93);
+        delay: 3s;
+    };
+    margin-top: 60px;
+
+    .or-sign {
+        background: white;
+        border: 3px solid $color-complementary;
+        padding: 7px 8px;
+        border-radius: 50%;
+        margin-left: 15px;
+        margin-right: 5px;
+        color: $color-complementary;
+        font-weight: bold;
+    }
+
+    .payment-group {
+        text-shadow: 17px -25px 5px rgba(150, 150, 150, 1);
+        text-transform: uppercase;
+        color: $color-complementary;
+        font-weight: bold;
+        font-size: 1.8em;
+        margin-left: 10px;
+    }
+
+    .pay-with-typeholder {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    
+        > .institution {
+            > img {
+                max-width: 130px;    
+                max-height: 80px;        
+            }
+    
+            &:not(:first-child) {
+                margin-left: 40px;
+            }
+        }
+    }
+}

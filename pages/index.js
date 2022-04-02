@@ -4,6 +4,7 @@ import styles from '../styles/Home.module.scss'
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Layout from '../components/layouts/layout';
+import { PayWith } from 'components/utils/pay-with/payWith';
 
 export default function Index(props) {  
   const router = useRouter();
@@ -29,12 +30,13 @@ export default function Index(props) {
           <Link href="/collections">
             <a>
               <Button className="mt-4 font-s-20" color="primary">
-                Shop now
+                Let&apos;s go shopping
               </Button>
             </a>
-          </Link>        
+          </Link>    
+          
+          <PayWith />  
         </main>
-
       </div>
     </>     
   )

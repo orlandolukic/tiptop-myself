@@ -8,6 +8,7 @@ import NProgress from 'nprogress';
 import { useProductContext } from '../../hooks/useProduct';
 import { ActionMenu } from './actionMenu';
 import { CartOverview } from './cart-overview/cartOverview';
+import { CurrencyChanger } from './currency-changer/currencyChanger';
 
 export function Menu(props) { 
 
@@ -105,7 +106,9 @@ export function Menu(props) {
                         </Link>
                     </div>
                     <div className='col-6 d-flex justify-content-end'>                        
-                        <div className={style['action-menu-placeholder']}>                            
+                        <div className={style['action-menu-placeholder']}>  
+
+                            <CurrencyChanger showCurrency={props.showCurrency} />                          
 
                             <ActionMenu 
                                 classes={['icon-heart']}                               

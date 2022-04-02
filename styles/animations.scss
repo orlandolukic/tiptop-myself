@@ -45,3 +45,39 @@
       opacity: 1;
     }
   }
+
+  @keyframes endlessly-opacity-change {
+        0% {
+                opacity: 0.2;
+        }
+        
+        20% {
+                opacity: 1;
+        }
+
+        80% {
+                opacity: 1;
+        }
+
+        100% {
+                opacity: 0.2;
+        }
+  }
+
+  @-webkit-keyframes endlessly-opacity-change {
+        0% {
+                opacity: 0.2;
+        }
+
+        20% {
+                opacity: 1;
+        }
+
+        80% {
+                opacity: 1;
+        }
+
+        100% {
+                opacity: 0.2;
+        }
+  }

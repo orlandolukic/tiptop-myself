@@ -6,6 +6,7 @@ import { LoadingContext } from "../../hooks/useLoading";
 import { Loader } from "../loader/loader";
 import { ProductContext, useProductContextRoot, useWishlist, useWishlistRoot, WishlistContext } from "../../hooks/useProduct";
 import { LayoutContext, useLayoutContextRoot } from "../../hooks/useLayout";
+import { CurrencyContext, useCurrencyContextForRoot } from "hooks/useCurrency";
 
 
 export default function Layout(props) {
@@ -32,6 +33,7 @@ export default function Layout(props) {
     let [ userOperationsObj, setUserOperationsObj ] = useState( userContext.operations );
     let [ isLoggedIn, setIsLoggedIn ] = useState( userContext.isLoggedIn );
     let [ isLoading, setIsLoading ] = useState( true );
+    const showCurrency = typeof props.showCurrency === typeof undefined ? false : props.showCurrency;
 
     // Wishlist context
     const productContext = useProductContextRoot();
@@ -66,22 +68,27 @@ export default function Layout(props) {
     };
 
     // Get layout context
-    const layoutContext = useLayoutContextRoot(menuBarHeight);    
+    const layoutContext = useLayoutContextRoot(menuBarHeight); 
+    
+    // Currency context 
+    const currencyContext = useCurrencyContextForRoot();
 
     return (
         <>    
             <LayoutContext.Provider value={layoutContext}>
                 <LoadingContext.Provider value={loadingContext}>
-                    <UserContext.Provider value={{ data: userDataObj, operations: userOperationsObj, isLoggedIn: isLoggedIn }}>
-                        <ProductContext.Provider value={productContext}>
-                            <DataUserContainer handlers={handlers} />
-                            <Menu innerRef={ref} setMenuBarHeight={setMenuBarHeight} />
-                            <div style={{marginTop: marginTop + "px"}}>
-                                {props.children}
-                            </div>
-                            <Loader isLoading={isLoading} />                    
-                        </ProductContext.Provider>                    
-                    </UserContext.Provider>            
+                    <CurrencyContext.Provider value={currencyContext}>
+                        <UserContext.Provider value={{ data: userDataObj, operations: userOperationsObj, isLoggedIn: isLoggedIn }}>
+                            <ProductContext.Provider value={productContext}>
+                                <DataUserContainer handlers={handlers} />
+                                <Menu innerRef={ref} setMenuBarHeight={setMenuBarHeight} showCurrency={showCurrency} />
+                                <div style={{marginTop: marginTop + "px"}}>
+                                    {props.children}
+                                </div>
+                                <Loader isLoading={isLoading} />                    
+                            </ProductContext.Provider>                    
+                        </UserContext.Provider>   
+                    </CurrencyContext.Provider>         
                 </LoadingContext.Provider>          
             </LayoutContext.Provider>                  
         </>

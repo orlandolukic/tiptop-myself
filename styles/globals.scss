@@ -1,4 +1,6 @@
+@use "sass:map";
 @import "_variables";
+@import "functions";
 
 html,
 body {
@@ -36,4 +38,10 @@ $to: 100;
 
 .tiptop-body {
   background-color: lighten($color-gray, 3%);
+}
+
+@each $name, $colorObj in $colors {
+  .color-text-#{$name} {
+      color: getColor( $name, "background" );
+  }
 }

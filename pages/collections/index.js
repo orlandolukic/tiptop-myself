@@ -22,25 +22,29 @@ export default function CollectionPage({ products, categoriesList, brandsList, .
         setIsLoading(true); 
         setResetProducts(true);  
         window.clearTimeout(filterTimeout);     
-        setFilterTimeout(window.setTimeout(() => {
-            if ( type === "category" ) {
-                setCategories({
-                    ...categories,
-                    [name]: value
-                });
-            } else {
-                setBrands({
-                    ...brands,
-                    [name]: value
-                });
-            }
+
+        if ( type === "category" ) {
+            setCategories({
+                ...categories,
+                [name]: value
+            });
+        } else {
+            setBrands({
+                ...brands,
+                [name]: value
+            });
+        }
+
+        setFilterTimeout(window.setTimeout(() => {            
             setResetProducts(false);
             setIsLoading(false);
             setShowProducts(true);
-        }, 350));        
+        }, 650));        
     });
 
     useEffect(() => {
+        if ( resetProducts )
+            return;
         if ( isLoading ) {
             let t = 150 + Math.random() * 250;
             setTimeout(() => {

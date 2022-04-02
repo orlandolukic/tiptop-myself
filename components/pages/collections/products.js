@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { SingleProduct } from "./single-product/singleProduct";
 
 
@@ -11,26 +11,25 @@ export function Products({ products, showProducts, filters, resetProductsOrder }
     const [ allProducts ] = useState( products );    
     const [ previewProducts, setPreviewProducts ] = useState([]);
     const [ offset, setOffset ] = useState(0);
-    const [ animateTimeout, setAnimateTimeout ] = useState(0);
     const [ listener, setListener ] = useState(false);
     const [ displaying, setDisplaying ] = useState(true);
     const timeouts = useRef({
         displaying: null
     });
 
-    const windowScrollListener = (e) => {
+    const windowScrollListener = useCallback((e) => {
         if ( displaying || resetProductsOrder )
             return;
-        let html = document.documentElement;
-        
+
+        let html = document.documentElement;        
         if ( html.scrollHeight - html.scrollTop - html.clientHeight < 350 ) {            
             setDisplaying(true);
             setOffset( offset + previewLimit );
         }
-    };
+    });
 
     useEffect(() => {
-        if ( !showProducts )
+        if ( !showProducts || resetProductsOrder ) 
             return;
 
         let arr = [];
@@ -48,7 +47,9 @@ export function Products({ products, showProducts, filters, resetProductsOrder }
         setPreviewProducts([
             ...previewProducts,
             ...arr
-        ]);  
+        ]); 
+      
+        window.clearTimeout(timeouts.current.displaying);
         timeouts.current.displaying = window.setTimeout(() => {
             setDisplaying(false);      
         }, animationTime);    
