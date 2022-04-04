@@ -2,7 +2,7 @@
 import { ClassManager } from '../../lib/utils';
 import s from './loader.module.scss';
 
-export function LoaderRing({style, classNames, variation, ...rest}) {
+export function LoaderRing({style, classNames, variation, color, ...rest}) {
     
     let styles = {
         width: "80px",
@@ -44,7 +44,8 @@ export function LoaderRing({style, classNames, variation, ...rest}) {
     }   
 
     return ( 
-        <div className={ ClassManager().addClass( s['lds-ring'] ).addClassesWithRoot(s, classNames).getClassName() } style={styles}>
+        <div className={ ClassManager().addClass( s['lds-ring'] ).addClassesWithRoot(s, classNames)
+            .addClassWithRoot(s, color !== null ? "color-" + color : null).getClassName() } style={styles}>
             <div style={stylesDiv}></div>
             <div style={stylesDiv}></div>
             <div style={stylesDiv}></div>

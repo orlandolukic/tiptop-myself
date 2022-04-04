@@ -8,6 +8,7 @@ import s from './currency-changer.module.scss';
 
 export function CurrencyChanger({ showCurrency }) {
 
+    const currencyContext = useCurrencyContext();
     const { getCurrency, getSupportedCurrencies, changeCurrency } = useCurrencyContext();
     const [ showCurrencyList, setShowCurrencyList ] = useState(false);
     const onOpenCurrency = useCallback((e) => {        
@@ -23,7 +24,7 @@ export function CurrencyChanger({ showCurrency }) {
             setShowCurrencyList(false);
     });
     const chooseCurrency = useCallback((currency, e) => {
-        changeCurrency(currency);
+        changeCurrency.call(currencyContext, currency);
     });
     const currencyChosenRef = useRef();
 
@@ -35,7 +36,7 @@ export function CurrencyChanger({ showCurrency }) {
         window.addEventListener("click", documentClickHandler);
         window.addEventListener("keyup", documentKeyupHandler);
         return () => {
-            console.log("destroy");
+            console.log("destroy currency changer");
             window.removeEventListener("click", documentClickHandler);
             window.removeEventListener("keyup", documentKeyupHandler);
         };

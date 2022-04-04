@@ -6,17 +6,22 @@ import { connectToDatabase } from "lib/mongodb";
 import { useCallback, useEffect, useState } from "react";
 import { Loader } from "components/loader/loader";
 import { Products } from "components/pages/collections/products";
-import { LinkedList } from "lib/linkedList";
 import { useStateWithLabel } from "lib/utils";
+import { useCurrencyContext } from "hooks/useCurrency";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 export default function CollectionPage({ products, categoriesList, brandsList, ...rest }) {
 
+    const currencyContext = useCurrencyContext();
+    const [ fetchedProducts ] = useStateWithLabel(products, "Fetched Products");
+    const [ preparedProducts, setPreparedProducts ] = useStateWithLabel(products, "Prepared Products");
     const [ isLoading, setIsLoading ] = useState(true);  
-    const [ showProducts, setShowProducts ] = useState(false);  
+    const [ showProducts, setShowProducts ] = useState(false);
     const [ brands, setBrands ] = useStateWithLabel({}, "Brands");
     const [ categories, setCategories ] = useStateWithLabel({}, "Categories");
     const [ filterTimeout, setFilterTimeout ] = useStateWithLabel(null, "FilterTimeout");
     const [ resetProducts, setResetProducts ] = useStateWithLabel(false, "ResetProducts");
+    const [ sort, setSort ] = useStateWithLabel(0, "Sort");
     const changeFilter = useCallback((type, name, value) => {
         setShowProducts(false);
         setIsLoading(true); 
@@ -34,6 +39,46 @@ export default function CollectionPage({ products, categoriesList, brandsList, .
                 [name]: value
             });
         }
+
+        setFilterTimeout(window.setTimeout(() => {            
+            setResetProducts(false);
+            setIsLoading(false);
+            setShowProducts(true);
+        }, 650));        
+    });
+
+    const changeSort = useCallback((event) => {
+        setSort(event.target.value);
+        setShowProducts(false);
+        setIsLoading(true); 
+        setResetProducts(true);  
+        window.clearTimeout(filterTimeout);     
+
+        // Prepare products
+        let arr = fetchedProducts.slice();
+        if ( event.target.value !== 0 ) {
+            for (let i=0; i<arr.length-1; i++)
+                for (let j=i+1; j<arr.length; j++) {
+                    let res = currencyContext.sortProducts(arr[i], arr[j])
+                    let cond = false;
+                    switch( event.target.value ) {
+                        // Descending sort
+                    case -1:
+                        cond = res < 0;
+                        break;
+                    default:
+                        cond = res > 0;
+                        break;
+                    }
+                    if ( cond ) {
+                        let x = arr[i];
+                        arr[i] = arr[j];
+                        arr[j] = x;
+                    }                
+                }
+        }
+        setPreparedProducts(arr); 
+
 
         setFilterTimeout(window.setTimeout(() => {            
             setResetProducts(false);
@@ -69,6 +114,7 @@ export default function CollectionPage({ products, categoriesList, brandsList, .
             categories[value.categoryName] = false;
         });
         return () => {
+            currencyContext.clearPendingTasks();
             if ( filterTimeout !== null )
                 window.clearTimeout(filterTimeout);
         }
@@ -95,14 +141,32 @@ export default function CollectionPage({ products, categoriesList, brandsList, .
                             </div>                            
                         </div>
                         <div className={s['sort']}>
-                            Sort
+                            <FormControl variant="standard" sx={{ m: 1, minWidth: 180 }}>
+                                <InputLabel id="demo-simple-select-standard-label">Sort data by</InputLabel>
+                                <Select
+                                labelId="demo-simple-select-standard-label"
+                                id="demo-simple-select-standard"
+                                value={sort}   
+                                onChange={changeSort}                             
+                                label="Sort"                                
+                                >                                       
+                                    <MenuItem value={0}>Default</MenuItem>
+                                    <MenuItem value={-1}><span className="fw-bold">Price:</span> High to low</MenuItem>
+                                    <MenuItem value={1}><span className="fw-bold">Price:</span> Low to high</MenuItem>                                    
+                                </Select>
+                            </FormControl>
                         </div>
                     </div>
                     <div className="mt-4">
                         <div className={s['products-placeholder']}>
                             <Loader classNames={['color-primary']} isLoading={isLoading} styleContainer={{ position: "absolute", minHeight: "400px" }} positionLoader={{top: "150px"}} /> 
                             <div className="row mb-5">
-                                <Products showProducts={showProducts} products={products} filters={{brands, categories}} resetProductsOrder={resetProducts} />
+                                <Products 
+                                    showProducts={showProducts} 
+                                    products={preparedProducts} 
+                                    filters={{brands, categories}} 
+                                    resetProductsOrder={resetProducts}                                    
+                                />
                             </div>                        
                         </div>                        
                     </div>                    

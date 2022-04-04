@@ -164,6 +164,35 @@
             font-size: 1.2em;
             font-weight: bold;
             color: $color-primary;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+
+            > .fetching-rate {
+                display: flex;
+                opacity: 0.6;
+            }
+
+            > .currency-print {
+                transition: 0.5s;
+                opacity: 0;
+                display: flex;
+                transform: scale3d(0.8,0.8,0.8);
+
+                &.show {
+                    opacity: 1;
+                    transform: scale3d(1,1,1);
+                }
+
+                > .currency-logo {
+                    margin-right: 5px;
+                    > img {
+                        width: 25px;
+                        transform: translateY(-2px);
+                    }
+                }
+    
+            }
         }
     }
 }

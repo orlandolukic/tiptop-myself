@@ -23,7 +23,7 @@ export default function Index(props) {
       <div className={styles.container}>      
         <main className={styles.main}>
           <h1 className={styles.title}>Wear better, look better.</h1>
-          <div className='mt-4 font-s-24' onClick={clickHandler}>
+          <div className='mt-4 font-s-24'>
             Don&apos;t you just love being in apparel?
           </div>
 

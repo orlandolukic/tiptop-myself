@@ -4,7 +4,7 @@ export default function Document() {
   return (
     <Html>
       <Head>
-        <link rel="icon" href="logo.svg" />
+        <link rel="icon" href="/assets/images/logo.svg" />
       </Head>
       <body className='tiptop-body'>
         <Main />

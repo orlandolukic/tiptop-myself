@@ -11,6 +11,7 @@ import { useRouter } from 'next/router';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import s from './singleProduct.module.scss';
+import { SingleProductPrice } from './singleProductPrice';
 
 export function SingleProduct({ singleProduct, columns, animateTimeout, index, ...rest }) {
     
@@ -179,7 +180,7 @@ export function SingleProduct({ singleProduct, columns, animateTimeout, index, .
                             {brand}
                         </div>
                         <div className={s['price']}>
-                            ${FormatNumber(priceUSD/100, 2)}
+                            <SingleProductPrice price={{USD: priceUSD, EUR: priceEUR}} s={s} />                            
                         </div>
                     </div>
                 </div>

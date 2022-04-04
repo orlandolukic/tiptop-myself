@@ -1,3 +1,4 @@
+import { useCurrencyContext } from "hooks/useCurrency";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { SingleProduct } from "./single-product/singleProduct";
 
@@ -8,7 +9,7 @@ export function Products({ products, showProducts, filters, resetProductsOrder }
     const animationDelayIncrement = 200;
     const animationDuration = 2500;
 
-    const [ allProducts ] = useState( products );    
+    const [ allProducts ] = useState( products );
     const [ previewProducts, setPreviewProducts ] = useState([]);
     const [ offset, setOffset ] = useState(0);
     const [ listener, setListener ] = useState(false);
@@ -47,7 +48,7 @@ export function Products({ products, showProducts, filters, resetProductsOrder }
         setPreviewProducts([
             ...previewProducts,
             ...arr
-        ]); 
+        ]);              
       
         window.clearTimeout(timeouts.current.displaying);
         timeouts.current.displaying = window.setTimeout(() => {

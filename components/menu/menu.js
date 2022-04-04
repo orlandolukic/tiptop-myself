@@ -42,6 +42,7 @@ export function Menu(props) {
         if ( inTransition )
             return; 
 
+        /*
         productContext.cart.putProductInCart({
             id: inc,
             name: "Pull & Bear",
@@ -54,16 +55,16 @@ export function Menu(props) {
             quantity: 1,
             discount: 200 + Math.random()*600
         });        
-        //setInc(inc+1);
-
-        /*
+        setInc(inc+1);
+        */
+ 
         NProgress.start();
         setInTransition(true);
         setInTransitionTimeout( window.setTimeout(() => {
             router.push(dest);
             NProgress.done();
             setInTransition(false);                        
-        }, delay) );*/
+        }, delay) );
     }
 
     const routeChangeStartHandler = (e) => {
@@ -98,7 +99,7 @@ export function Menu(props) {
                             <a>
                                 <div className={style['logo-placeholder']}>
                                     <div className={style['logo']}>
-                                        <img src='assets/images/logo.svg' />
+                                        <img src='/assets/images/logo.svg' />
                                     </div>
                                     <div className={style['name']}>tiptop</div>
                                 </div>
