@@ -22,10 +22,10 @@ export function LeftHandSidePanel({ categories, brands, changeFilter, ...rest })
     }
 
     const onChangeCategory = useCallback((category, e) => {
-        changeFilter("category", category.categoryName, e.target.checked);
+        changeFilter("categories", category.categoryName, e.target.checked);
     });
     const onChangeBrand = useCallback((brand, e) => {
-        changeFilter("brand", brand.brandName, e.target.checked);
+        changeFilter("brands", brand.brandName, e.target.checked);
     });
 
     useEffect(() => {

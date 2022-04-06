@@ -3,15 +3,16 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { SingleProduct } from "./single-product/singleProduct";
 
 
-export function Products({ products, showProducts, filters, resetProductsOrder }) {
+export function Products({ products, showProducts, filters, activeFilters, resetProductsOrder }) {
 
     const previewLimit = 20;
     const animationDelayIncrement = 200;
     const animationDuration = 2500;
 
-    const [ allProducts ] = useState( products );
+    const [ allProducts, setAllProducts ] = useState( products );
     const [ previewProducts, setPreviewProducts ] = useState([]);
     const [ offset, setOffset ] = useState(0);
+    const [ toAddOnOffset, setToAddOnOffset ] = useState(0);
     const [ listener, setListener ] = useState(false);
     const [ displaying, setDisplaying ] = useState(true);
     const timeouts = useRef({
@@ -25,7 +26,7 @@ export function Products({ products, showProducts, filters, resetProductsOrder }
         let html = document.documentElement;        
         if ( html.scrollHeight - html.scrollTop - html.clientHeight < 350 ) {            
             setDisplaying(true);
-            setOffset( offset + previewLimit );
+            setOffset( offset + toAddOnOffset );
         }
     });
 
@@ -36,24 +37,47 @@ export function Products({ products, showProducts, filters, resetProductsOrder }
         let arr = [];
         let added = 0;
         let animationTime = 1000;
-        for (let i=offset; i < allProducts.length && added < previewLimit; i++) {
+        let productBrand, productCategory;         
+        let i;   
+        console.log(offset, toAddOnOffset);
+        for (i=offset; i < allProducts.length && added < previewLimit; i++) {
+            
+            // Make a distiction whether to include this particular product into display array
+            productBrand = allProducts[i].brand;
+            productCategory = allProducts[i].category;   
+            console.log(activeFilters, filters);         
+            if ( activeFilters.active > 0 ) {
+                if ( activeFilters.brands > 0 && activeFilters.categories > 0 ) {                                      
+                    if ( !filters.brands[productBrand] || !filters.categories[productCategory] )
+                        continue;                    
+                    console.log(productBrand, productCategory, filters.brands, filters.categories);
+                } else if ( activeFilters.brands > 0 && activeFilters.categories === 0 ) {
+                    if ( !filters.brands[productBrand] )
+                        continue;
+                } else if ( activeFilters.brands === 0 && activeFilters.categories > 0 ) {
+                    if ( !filters.categories[productCategory] )
+                        continue;
+                }
+            }
+
             arr.push({  
                 product: allProducts[i],
                 animationDelay: animationTime,
                 animationDuration: animationDuration
             });
-            animationTime += animationDelayIncrement;
-            added++;
+            animationTime += animationDelayIncrement;   
+            added++;         
         }        
         setPreviewProducts([
             ...previewProducts,
             ...arr
-        ]);              
+        ]);  
+        setToAddOnOffset(i - offset);                    
       
         window.clearTimeout(timeouts.current.displaying);
         timeouts.current.displaying = window.setTimeout(() => {
             setDisplaying(false);      
-        }, animationTime);    
+        }, animationTime + animationDelayIncrement);    
 
     }, [showProducts, offset]);
 
@@ -81,6 +105,12 @@ export function Products({ products, showProducts, filters, resetProductsOrder }
             setPreviewProducts([]);            
         }
     }, [resetProductsOrder]);
+
+    useEffect(() => {
+        setPreviewProducts([]);
+        setAllProducts(products);
+        setOffset(0);
+    }, [products]);
     
     return (
         <>        

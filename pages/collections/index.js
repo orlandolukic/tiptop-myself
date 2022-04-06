@@ -6,7 +6,7 @@ import { connectToDatabase } from "lib/mongodb";
 import { useCallback, useEffect, useState } from "react";
 import { Loader } from "components/loader/loader";
 import { Products } from "components/pages/collections/products";
-import { useStateWithLabel } from "lib/utils";
+import { shallowCopy, useStateWithLabel } from "lib/utils";
 import { useCurrencyContext } from "hooks/useCurrency";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
@@ -22,13 +22,34 @@ export default function CollectionPage({ products, categoriesList, brandsList, .
     const [ filterTimeout, setFilterTimeout ] = useStateWithLabel(null, "FilterTimeout");
     const [ resetProducts, setResetProducts ] = useStateWithLabel(false, "ResetProducts");
     const [ sort, setSort ] = useStateWithLabel(0, "Sort");
+    const [ activeFilters, setActiveFilters ] = useStateWithLabel({
+        active: 0,
+        brands: 0,
+        categories: 0
+    }, "Active Filters");
+    const currenctContext = useCurrencyContext();
+
     const changeFilter = useCallback((type, name, value) => {
         setShowProducts(false);
         setIsLoading(true); 
         setResetProducts(true);  
-        window.clearTimeout(filterTimeout);     
+        window.clearTimeout(filterTimeout);   
+        
+        if ( !value ) {
+            setActiveFilters({
+                ...activeFilters,
+                active: activeFilters.active - 1,
+                [type]: activeFilters[type] - 1
+            });
+        } else {
+            setActiveFilters({
+                ...activeFilters,
+                active: activeFilters.active + 1,
+                [type]: activeFilters[type] + 1
+            });
+        }
 
-        if ( type === "category" ) {
+        if ( type === "categories" ) {
             setCategories({
                 ...categories,
                 [name]: value
@@ -47,21 +68,24 @@ export default function CollectionPage({ products, categoriesList, brandsList, .
         }, 650));        
     });
 
-    const changeSort = useCallback((event) => {
-        setSort(event.target.value);
+    const changeSortCallback = useCallback((event) => {
+        changeSort(event.target.value);
+    });
+    const changeSort = useCallback((sortOption) => {
+        setSort(sortOption);
         setShowProducts(false);
         setIsLoading(true); 
         setResetProducts(true);  
         window.clearTimeout(filterTimeout);     
 
         // Prepare products
-        let arr = fetchedProducts.slice();
-        if ( event.target.value !== 0 ) {
+        let arr = shallowCopy(fetchedProducts);
+        if ( sortOption !== 0 ) {
             for (let i=0; i<arr.length-1; i++)
                 for (let j=i+1; j<arr.length; j++) {
-                    let res = currencyContext.sortProducts(arr[i], arr[j])
+                    let res = currencyContext.sortProducts(arr[i], arr[j]);                    
                     let cond = false;
-                    switch( event.target.value ) {
+                    switch( sortOption ) {
                         // Descending sort
                     case -1:
                         cond = res < 0;
@@ -78,7 +102,8 @@ export default function CollectionPage({ products, categoriesList, brandsList, .
                 }
         }
         setPreparedProducts(arr); 
-
+        //console.log("fetched array", fetchedProducts);
+        //console.log("sorted", arr);
 
         setFilterTimeout(window.setTimeout(() => {            
             setResetProducts(false);
@@ -100,6 +125,12 @@ export default function CollectionPage({ products, categoriesList, brandsList, .
             }, t + 450);
         }
     }, [isLoading]);
+
+    useEffect(() => {
+        if ( sort !== 0 ) {
+            changeSort(sort);
+        }
+    }, [currenctContext.getCurrency()]);
 
     useEffect(() => {  
         setTimeout(() => {
@@ -147,7 +178,7 @@ export default function CollectionPage({ products, categoriesList, brandsList, .
                                 labelId="demo-simple-select-standard-label"
                                 id="demo-simple-select-standard"
                                 value={sort}   
-                                onChange={changeSort}                             
+                                onChange={changeSortCallback}                             
                                 label="Sort"                                
                                 >                                       
                                     <MenuItem value={0}>Default</MenuItem>
@@ -165,6 +196,7 @@ export default function CollectionPage({ products, categoriesList, brandsList, .
                                     showProducts={showProducts} 
                                     products={preparedProducts} 
                                     filters={{brands, categories}} 
+                                    activeFilters={activeFilters}
                                     resetProductsOrder={resetProducts}                                    
                                 />
                             </div>                        
