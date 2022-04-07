@@ -4,7 +4,7 @@ import { createRef, Fragment, useCallback, useEffect, useState } from "react";
 import s from "./index.module.scss";
 
 
-export function LeftHandSidePanel({ categories, brands, changeFilter, ...rest }) {
+export function LeftHandSidePanel({ categories, brands, changeFilter, forceFixed, ...rest }) {
 
     const filtersRef = createRef();
     const [ fixed, setIsFixed ] = useState(false);    
@@ -36,6 +36,12 @@ export function LeftHandSidePanel({ categories, brands, changeFilter, ...rest })
             window.removeEventListener("scroll", scroll);            
         };
     });
+
+    useEffect(() => {
+        if ( !forceFixed )
+            return;
+        setIsFixed(false);
+    }, [forceFixed]);
 
     return (
         <div className={s["left-hand-side-panel"] + (fixed ? " " + s['is-fixed'] : null)} ref={filtersRef} style={{top: layoutContext.getMenuBarHeight() + 15}}>  

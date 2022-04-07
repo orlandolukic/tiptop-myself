@@ -24,6 +24,7 @@ export default function CollectionPage({ products, categoriesList, brandsList, .
     const [ resetProducts, setResetProducts ] = useStateWithLabel(false, "ResetProducts");
     const [ sort, setSort ] = useStateWithLabel(0, "Sort");
     const [ fixedTitle, setFixedTitle ] = useStateWithLabel(false, "Fixed Title");
+    const [ forceFixed, setForceFixed ] = useStateWithLabel(false, "Force de-fix");
     const fixedTitleRef = useRef();    
     const titleParentRef = useRef();
     const [ activeFilters, setActiveFilters ] = useStateWithLabel({
@@ -80,6 +81,7 @@ export default function CollectionPage({ products, categoriesList, brandsList, .
         setShowProducts(false);
         setIsLoading(true); 
         setResetProducts(true);  
+        setForceFixed(true);
         window.clearTimeout(filterTimeout);     
 
         // Prepare products
@@ -113,6 +115,7 @@ export default function CollectionPage({ products, categoriesList, brandsList, .
             setResetProducts(false);
             setIsLoading(false);
             setShowProducts(true);
+            setForceFixed(false);
         }, 650));        
     });
 
@@ -142,7 +145,7 @@ export default function CollectionPage({ products, categoriesList, brandsList, .
 
     useEffect(() => {
         if ( sort !== 0 ) {
-            changeSort(sort);
+            changeSort(sort);            
         }
     }, [currenctContext.getCurrency()]);
 
@@ -179,7 +182,7 @@ export default function CollectionPage({ products, categoriesList, brandsList, .
         <div className="container pt-3">
             <div className="row">
                 <div className="col-lg-2 d-none d-sm-block">
-                    <LeftHandSidePanel categories={categoriesList} brands={brandsList} changeFilter={changeFilter} {...rest} />
+                    <LeftHandSidePanel forceFixed={forceFixed} categories={categoriesList} brands={brandsList} changeFilter={changeFilter} {...rest} />
                 </div>
                 <div ref={titleParentRef} className="col-12 col-lg-10">   
                     {fixedTitle && 
