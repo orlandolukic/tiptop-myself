@@ -6,6 +6,7 @@ $color-gray: #F1F2F6;
 $color-danger: rgb(195, 0, 0);
 $color-success: rgb(0, 184, 0);
 $color-white: white;
+$BG_COLOR: lighten($color-gray, 3%);
 
 $colors: (
     "primary": ( "background": $color-primary, "color": white ),

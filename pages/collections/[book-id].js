@@ -18,7 +18,13 @@ export default function SingleBookPage({ product }) {
             <Head>
                 <title>{product.name} | TipTop</title>
             </Head>
-            sdsd
+            <div className="container mt-4">
+                <div className="row">
+                    <div className="col-12">
+                        Product page is working!
+                    </div>
+                </div>
+            </div>
         </>
     );
 }

@@ -1,6 +1,7 @@
 import { Mutex } from "lib/semaphore";
 import { useStateWithLabel } from "lib/utils";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { Subject, Subscription } from "rxjs";
 
 
 export const ProductContext = createContext({
@@ -24,7 +25,11 @@ export const ProductContext = createContext({
         getRefreshAttempts: () => {},
         getTotalQuantity: () => {},
         deleteItem: async (item) => {},
-        hasProduct: (id) => {}
+        hasProduct: (id) => {},
+
+        // Subscriptions
+        onFlush: (callback) => Subscription,
+        onDeleteItem: (callback) => Subscription
     }
 });
 
@@ -33,6 +38,8 @@ export function useProductContextRoot() {
     let [ productsCart, setProductsCart ] = useState([]); 
     let [ refreshCart, setRefreshCart ] = useStateWithLabel(0, "RefreshCart");
     let [ refreshWishlist, setRefreshWishlist ] = useStateWithLabel(0, "RefreshWishlist");
+    let [ cartOnFlush ] = useStateWithLabel( new Subject(), "Subject: on flush cart" );
+    let [ cartOnDeleteItem ] = useStateWithLabel( new Subject(), "Subject: on delete item" );
       
     let [ mutexWishlist ] = useStateWithLabel( Mutex() );
     let elementsInWishlist = useRef({
@@ -126,7 +133,8 @@ export function useProductContextRoot() {
             },
             flush: async function() {                
                 return new Promise((resolve) => {                
-                    setTimeout(() => {
+                    setTimeout(() => {                        
+                        cartOnFlush.next();
                         setProductsCart([]);
                         resolve();
                     }, 1500);
@@ -156,7 +164,7 @@ export function useProductContextRoot() {
                 return q;
             },
             deleteItem: async (item) => {
-                // Send request to the server to delete shopping cart
+                // Send request to the server to delete shopping cart item
                 // ...
                 // and then  
                 return new Promise((resolve, reject) => {
@@ -167,7 +175,8 @@ export function useProductContextRoot() {
                                     return false;
                                 return true;
                             })
-                        );               
+                        ); 
+                        cartOnDeleteItem.next(item);
                         resolve();
                     }, 2000);                    
                 });                           
@@ -178,6 +187,14 @@ export function useProductContextRoot() {
                         return true;
                 }
                 return false;
+            },
+
+            onFlush: function(callback) {
+                return cartOnFlush.asObservable().subscribe(callback);
+            },
+
+            onDeleteItem: function(callback) {
+                return cartOnDeleteItem.asObservable().subscribe(callback);
             }
         }
 

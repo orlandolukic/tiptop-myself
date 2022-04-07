@@ -40,7 +40,7 @@ export function SingleProduct({ product, loading, ...rest }) {
         <>            
             <div className={s['single-product-placeholder']}>                
                 <div className={s['single-product-image']}>
-                    <img src={ImageUtils.getProductImageRoot() + "/" + product.image} />
+                    <img src={product.image} />
                 </div>
                 <div className={s['single-product-details']}>
                     <div className={s['single-product-name']}>{product.name}</div>

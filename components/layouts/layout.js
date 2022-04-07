@@ -7,6 +7,7 @@ import { Loader } from "../loader/loader";
 import { ProductContext, useProductContextRoot, useWishlist, useWishlistRoot, WishlistContext } from "../../hooks/useProduct";
 import { LayoutContext, useLayoutContextRoot } from "../../hooks/useLayout";
 import { CurrencyContext, useCurrencyContextForRoot } from "hooks/useCurrency";
+import { Scroll } from "components/utils/scroll/scroll";
 
 
 export default function Layout(props) {
@@ -90,7 +91,8 @@ export default function Layout(props) {
                         </UserContext.Provider>   
                     </CurrencyContext.Provider>         
                 </LoadingContext.Provider>          
-            </LayoutContext.Provider>                  
+            </LayoutContext.Provider>
+            <Scroll />                  
         </>
     );
 }

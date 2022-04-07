@@ -11,27 +11,29 @@ export function LeftHandSidePanel({ categories, brands, changeFilter, ...rest })
     
     const layoutContext = useLayoutContext();    
 
-    const scroll = (e) => {        
+    const scroll = (e) => {         
         try {        
             if ( document.documentElement.scrollTop > filtersRef.current.getBoundingClientRect().top - 30 ) {
                 setIsFixed(true);
             } else {
                 setIsFixed(false);
             }
-        } catch(e) {}
-    }
+        } catch(x) {}
+    };
 
     const onChangeCategory = useCallback((category, e) => {
         changeFilter("categories", category.categoryName, e.target.checked);
+        setIsFixed(false);
     });
     const onChangeBrand = useCallback((brand, e) => {
         changeFilter("brands", brand.brandName, e.target.checked);
+        setIsFixed(false);
     });
 
-    useEffect(() => {
+    useEffect(() => {        
         window.addEventListener("scroll", scroll);
         return () => {
-            window.removeEventListener("scroll", scroll);
+            window.removeEventListener("scroll", scroll);            
         };
     });
 

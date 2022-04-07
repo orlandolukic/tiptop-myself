@@ -9,7 +9,11 @@ export function Loader({ isLoading, styleContainer, positionLoader, ...rest }) {
 
     const styleContainerInside = {
         position: typeof styleContainer === typeof undefined || styleContainer === null || typeof styleContainer.position === typeof undefined ? "fixed" : styleContainer.position,
-        minHeight: typeof styleContainer === typeof undefined || styleContainer === null || typeof styleContainer.minHeight === typeof undefined ? "auto" : styleContainer.minHeight
+        minHeight: typeof styleContainer === typeof undefined || styleContainer === null || typeof styleContainer.minHeight === typeof undefined ? "auto" : styleContainer.minHeight,
+        top: typeof styleContainer === typeof undefined || styleContainer === null || typeof styleContainer.top === typeof undefined ? "auto" : styleContainer.top,
+        right: typeof styleContainer === typeof undefined || styleContainer === null || typeof styleContainer.right === typeof undefined ? "auto" : styleContainer.right,
+        bottom: typeof styleContainer === typeof undefined || styleContainer === null || typeof styleContainer.bottom === typeof undefined ? "auto" : styleContainer.bottom,
+        left: typeof styleContainer === typeof undefined || styleContainer === null || typeof styleContainer.left === typeof undefined ? "auto" : styleContainer.left
     };
 
     const styleContent = {

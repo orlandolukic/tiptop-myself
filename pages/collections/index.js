@@ -3,12 +3,13 @@ import { CollectionsLayout } from "components/layouts/collections-layout";
 import s from "components/pages/collections/index.module.scss";
 import { LeftHandSidePanel } from "components/pages/collections/leftHandSidePanel";
 import { connectToDatabase } from "lib/mongodb";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Loader } from "components/loader/loader";
 import { Products } from "components/pages/collections/products";
-import { shallowCopy, useStateWithLabel } from "lib/utils";
+import { ClassManager, shallowCopy, useStateWithLabel } from "lib/utils";
 import { useCurrencyContext } from "hooks/useCurrency";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { Subject } from "rxjs";
 
 export default function CollectionPage({ products, categoriesList, brandsList, ...rest }) {
 
@@ -22,6 +23,9 @@ export default function CollectionPage({ products, categoriesList, brandsList, .
     const [ filterTimeout, setFilterTimeout ] = useStateWithLabel(null, "FilterTimeout");
     const [ resetProducts, setResetProducts ] = useStateWithLabel(false, "ResetProducts");
     const [ sort, setSort ] = useStateWithLabel(0, "Sort");
+    const [ fixedTitle, setFixedTitle ] = useStateWithLabel(false, "Fixed Title");
+    const fixedTitleRef = useRef();    
+    const titleParentRef = useRef();
     const [ activeFilters, setActiveFilters ] = useStateWithLabel({
         active: 0,
         brands: 0,
@@ -112,6 +116,16 @@ export default function CollectionPage({ products, categoriesList, brandsList, .
         }, 650));        
     });
 
+    const scroll = useCallback((e) => {           
+        try {        
+            if ( document.documentElement.scrollTop > fixedTitleRef.current.getBoundingClientRect().top - 12) {
+                setFixedTitle(true);                
+            } else {
+                setFixedTitle(false);
+            }
+        } catch(x) {}
+    });
+
     useEffect(() => {
         if ( resetProducts )
             return;
@@ -144,10 +158,14 @@ export default function CollectionPage({ products, categoriesList, brandsList, .
         categoriesList.forEach((value) => {
             categories[value.categoryName] = false;
         });
+
+        window.addEventListener("scroll", scroll);
         return () => {
             currencyContext.clearPendingTasks();
             if ( filterTimeout !== null )
                 window.clearTimeout(filterTimeout);
+
+            window.removeEventListener("scroll", scroll);
         }
     }, []);
 
@@ -163,8 +181,12 @@ export default function CollectionPage({ products, categoriesList, brandsList, .
                 <div className="col-lg-2 d-none d-sm-block">
                     <LeftHandSidePanel categories={categoriesList} brands={brandsList} changeFilter={changeFilter} {...rest} />
                 </div>
-                <div className="col-12 col-lg-10">
-                    <div className={s['collections-title']}>
+                <div ref={titleParentRef} className="col-12 col-lg-10">   
+                    {fixedTitle && 
+                        <div style={{height: "64px"}}></div>
+                    }                                   
+                    <div ref={fixedTitleRef} className={ClassManager().addClass(s['collections-title']).addClassWithRoot(s, fixedTitle ? "fixed" : null).getClassName()} 
+                        style={{width: titleParentRef.current ? titleParentRef.current.getBoundingClientRect().width - 20 : "auto"}}>
                         <div className={s['title']}>
                             <div>
                                 <h3 style={{marginBottom: "3px"}}>Collections</h3>                                                                                    
@@ -187,12 +209,13 @@ export default function CollectionPage({ products, categoriesList, brandsList, .
                                 </Select>
                             </FormControl>
                         </div>
-                    </div>
+                    </div>                    
                     <div className="mt-4">
                         <div className={s['products-placeholder']}>
                             <Loader classNames={['color-primary']} isLoading={isLoading} styleContainer={{ position: "absolute", minHeight: "400px" }} positionLoader={{top: "150px"}} /> 
                             <div className="row mb-5">
                                 <Products 
+                                    s={s}
                                     showProducts={showProducts} 
                                     products={preparedProducts} 
                                     filters={{brands, categories}} 

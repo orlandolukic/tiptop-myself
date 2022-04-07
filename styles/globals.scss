@@ -37,7 +37,7 @@ $to: 100;
 }
 
 .tiptop-body {
-  background-color: lighten($color-gray, 3%);
+  background-color: $BG_COLOR;
   overflow-y: scroll !important;
   padding-right: 0 !important;
 

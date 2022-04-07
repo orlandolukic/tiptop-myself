@@ -12,6 +12,18 @@
         display: flex;
         width: 100%;
     }
+
+    &.fixed {
+        padding: 10px 0;
+        top: 63px;
+        position: fixed;
+        width: inherit;
+        background-color: $BG_COLOR;
+        border-bottom: 5px solid $color-gray;
+        -webkit-box-shadow: 3px 25px 20px -28px rgba(0,0,0,0.75);
+        -moz-box-shadow: 3px 25px 20px -28px rgba(0,0,0,0.75);
+        box-shadow: 3px 25px 20px -28px rgba(0,0,0,0.75);
+    }
 }
 
 .left-hand-side-panel {
@@ -22,4 +34,43 @@
 
 .products-placeholder {
     position: relative;
+}
+
+.no-products-found-placeholder {
+    opacity: 0;
+    transition: 0.5s;
+
+    &.shown {
+        opacity: 1;
+    }
+
+    > .no-products-found-content {
+        display: flex;
+        flex-direction: column;
+        padding: 50px 0;
+        color: $color-complementary;
+
+        > div {
+            display: flex;
+            margin: {
+                left: auto;
+                right: auto;
+            }
+        }
+
+        > .title {            
+            margin: {                
+                top: 10px;
+            };
+            font-size: 2em;
+            font-weight: bold;
+            color: $color-primary;
+        }
+
+        > .subtitle {
+            color: $color-complementary;
+            font-size: 1.2em;
+            margin-top: 2px;
+        }
+    }
 }

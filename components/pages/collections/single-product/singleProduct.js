@@ -24,16 +24,32 @@ export function SingleProduct({ singleProduct, columns, animateTimeout, index, .
     const [ addingToCart, setAddingToCart ] = useState(false);
     const [ addingToWishlist, setAddingToWishlist ] = useState(false);
     const [ inWishlist, setInWishlist ] = useState( productContext.wishlist.hasProduct(id) );
-    const [ inCart, setInCart ] = useState( productContext.cart.hasProduct(id) );
+    const [ inCart, setInCart ] = useState( productContext.cart.hasProduct(id) );     
     const timeouts = useRef({
         timeoutWishlist: null
+    });
+    const subscriptions = useRef({
+        cartOnFlush: null,
+        cartOnDeleteItem: null
     });
     const isMounted = useRef(true);
 
     useEffect(() => {
+        subscriptions.current.cartOnFlush =  productContext.cart.onFlush(() => {            
+            setInCart(false);
+        });                
+        subscriptions.current.onDeleteItem = productContext.cart.onDeleteItem((item) => {
+            if ( item.id === id )
+                setInCart(false);
+        });
         return () => {            
-            isMounted.current = false;
-            window.clearTimeout(timeouts.current.timeoutWishlist);
+            isMounted.current = false;        
+            window.clearTimeout(timeouts.current.timeoutWishlist);            
+            if ( subscriptions.current.cartOnFlush !== null ) {                
+                subscriptions.current.cartOnFlush.unsubscribe();
+            }
+            if ( subscriptions.current.cartOnDeleteItem )
+                subscriptions.current.cartOnDeleteItem.unsubscribe();
         };
     }, []);
 
@@ -55,26 +71,58 @@ export function SingleProduct({ singleProduct, columns, animateTimeout, index, .
         router.push('/collections/' + id);
     };
 
-    const addToCart = (e) => {
+    const addToCart = (e) => {        
         e.stopPropagation();  
+
+        if ( addingToCart )
+            return;
+
         setAddingToCart(true);
         toast.promise(
             new Promise((resolve) => {
-                setTimeout(() => {                 
-                    setAddingToCart(false);  
-                    setInCart(true);             
+                setTimeout(async () => {  
+                    
+                    if ( inCart ) {
+                        await productContext.cart.deleteItem(product);
+                    } else  {
+                        await productContext.cart.putProductInCart({
+                            id: id,
+                            name: name,
+                            brand: brand,
+                            category: category,
+                            price: product.priceUSD / 100,
+                            currency: "USD",
+                            size: "XS",
+                            image: image,
+                            quantity: 1,
+                            discount: 0
+                        });                                                                                                  
+                    }
+                    if ( isMounted.current ) {
+                        setInCart(!inCart);     
+                        setAddingToCart(false);  
+                    }                    
                     resolve();
-                }, 2500)
+                }, 1500)
             }), {
-                pending: "Adding to cart...",
+                pending: !inCart ? "Adding to cart..." : "Removing from cart...",
                 success: {
                     render: ({data}) => <>
-                        <div>You&apos;ve successfully added product <strong>&apos;{name}&apos;</strong> to the cart.</div>
-                        <div className='mt-2'>
-                            <Link href="/cart">
-                                <Button variant="outlined">Show Cart</Button>                            
-                            </Link>                            
-                        </div>
+                        {!inCart &&
+                        <>
+                            <div>You&apos;ve successfully added product <strong>&apos;{name}&apos;</strong> to the cart.</div>
+                            <div className='mt-2'>
+                                <Link href="/cart">
+                                    <Button variant="outlined">Show Cart</Button>                            
+                                </Link>                            
+                            </div>
+                        </>
+                        }   
+                        {inCart &&
+                        <>
+                            <div>You&apos;ve successfully removed product <strong>&apos;{name}&apos;</strong> from the cart.</div>                            
+                        </>
+                        }                       
                     </>
                 },
                 "error": "An error occured, please try again later"                
