@@ -11,7 +11,7 @@ export function LeftHandSidePanel({ categories, brands, changeFilter, forceFixed
     
     const layoutContext = useLayoutContext();    
 
-    const scroll = (e) => {         
+    const scroll = useCallback((e) => {         
         try {        
             if ( document.documentElement.scrollTop > filtersRef.current.getBoundingClientRect().top - 30 ) {
                 setIsFixed(true);
@@ -19,7 +19,7 @@ export function LeftHandSidePanel({ categories, brands, changeFilter, forceFixed
                 setIsFixed(false);
             }
         } catch(x) {}
-    };
+    });
 
     const onChangeCategory = useCallback((category, e) => {
         changeFilter("categories", category.categoryName, e.target.checked);
